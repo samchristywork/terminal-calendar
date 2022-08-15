@@ -179,6 +179,16 @@ void print_cal_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int calendar_
 }
 
 int main() {
+
+  FILE *f = fopen("data.json", "rb");
+  if (!f) {
+    perror("fopen");
+    exit(EXIT_FAILURE);
+  }
+
+  cJSON *cjson = readJSONFile(f);
+  fclose(f);
+
   WINDOW *w;
   if ((w = initscr()) == NULL) {
     fprintf(stderr, "Error initializing ncurses.\n");
