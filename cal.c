@@ -197,7 +197,58 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int da
   }
 
   move(rooty, rootx + 25);
-  vline('|', height);
+  vline('|', height - 1);
+}
+
+void edit_file(int date_offset) {
+  time_t selected_day = startup_time + date_offset * ONEDAY;
+  struct tm *selected = localtime(&selected_day);
+
+  char tag[256];
+  strftime(tag, 256, "%Y-%m-%d", selected);
+  cJSON *root = find(cjson, tag);
+  if (!root) {
+    root = cJSON_CreateObject();
+    cJSON_AddItemToObject(cjson, tag, root);
+  }
+
+  if (root) {
+    cJSON *day_data = find(root, "data");
+    if (!day_data) {
+      day_data = cJSON_CreateString("");
+      cJSON_AddItemToObject(root, "data", day_data);
+    }
+
+    char filename[] = "/tmp/cal.XXXXXX";
+    int tmpfd = mkstemp(filename);
+    FILE *tmpfile = fdopen(tmpfd, "wb");
+    if (day_data) {
+      fprintf(tmpfile, "%s", day_data->valuestring);
+    }
+    fclose(tmpfile);
+
+    char command[256];
+    sprintf(command, "%s %s", "st -e nvim", filename);
+    system(command);
+
+    tmpfile = fopen(filename, "rb");
+    fseek(tmpfile, 0, SEEK_END);
+    int size = ftell(tmpfile);
+    rewind(tmpfile);
+
+    char buffer[size + 1];
+    buffer[size] = 0;
+    int ret = fread(buffer, 1, size, tmpfile);
+    if (ret != size) {
+      fprintf(stderr, "Could not read the expected number of bytes.\n");
+      exit(EXIT_FAILURE);
+    }
+
+    cJSON_Delete(day_data);
+    day_data = cJSON_CreateString(buffer);
+    cJSON_AddItemToObject(root, "data", day_data);
+    modified = 1;
+  }
 }
 
 int main() {
