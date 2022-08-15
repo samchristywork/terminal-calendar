@@ -68,13 +68,13 @@ cJSON *readJSONFile(FILE *f) {
     exit(EXIT_FAILURE);
   }
 
-  cJSON *cjson = cJSON_Parse(buffer);
-  if (!cjson) {
+  cJSON *handle = cJSON_Parse(buffer);
+  if (!handle) {
     const char *error_ptr = cJSON_GetErrorPtr();
     if (error_ptr) {
       fprintf(stderr, "Error before: %s\n", error_ptr);
     }
-    cJSON_Delete(cjson);
+    cJSON_Delete(handle);
     exit(EXIT_FAILURE);
   }
   return cjson;
@@ -107,7 +107,7 @@ void print_multiline(char *str, int rootx, int rooty) {
   free(data);
 }
 
-void print_day_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int date_offset) {
+void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
 
   time_t selected_day = startup_time + date_offset * ONEDAY;
   struct tm *selected = localtime(&selected_day);
@@ -136,7 +136,7 @@ void print_day_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int date_offs
   }
 }
 
-void print_cal_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int calendar_scroll, int date_offset) {
+void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int date_offset) {
   int width;
   int height;
   getmaxyx(w, height, width);
@@ -161,7 +161,7 @@ void print_cal_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int calendar_
 
     int line = rooty + 2 + i / 7;
     move(line, rootx + (i % 7) * 3 + 4);
-    if (line > height - 1) {
+    if (line > height - 2) {
       break;
     }
 
@@ -201,7 +201,7 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  cJSON *cjson = readJSONFile(f);
+  cjson = readJSONFile(f);
   fclose(f);
 
   WINDOW *w;
@@ -236,6 +236,9 @@ int main() {
   while (1) {
     set_statusline("");
     switch (c) {
+    case ('0'):
+      date_offset = 0;
+      break;
     case ('j'):
       date_offset += 7;
       break;
@@ -247,6 +250,20 @@ int main() {
       break;
     case ('h'):
       date_offset--;
+      break;
+    case ('s'):
+      save();
+      break;
+    case (' '):
+      edit_file(date_offset);
+      break;
+    case ('i'):
+      edit_file(date_offset);
+      break;
+    case ('q'):
+      if (!modified) {
+        running = 0;
+      }
       break;
     case (KEY_DOWN):
       calendar_scroll++;
