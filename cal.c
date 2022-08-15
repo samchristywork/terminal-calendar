@@ -23,6 +23,33 @@ void signal_handler(int sig) {
   refresh();
 }
 
+void print_multiline(char *str, int rootx, int rooty) {
+
+  char *data = malloc(strlen(str) + 1);
+  strcpy(data, str);
+  char *ptr = data;
+  int line = 0;
+
+  for (int i = 0;; i++) {
+    if (ptr[i] == 0) {
+      move(rooty + line, rootx);
+      printw("%s", ptr);
+      break;
+    }
+
+    if (ptr[i] == '\n') {
+      ptr[i] = 0;
+      move(rooty + line, rootx);
+      printw("%s", ptr);
+      ptr += i + 1;
+      i = 0;
+      line++;
+    }
+  }
+
+  free(data);
+}
+
 void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
 
   time_t selected_day = startup_time + date_offset * ONEDAY;
