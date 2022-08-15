@@ -116,15 +116,15 @@ void print_day_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int date_offs
   if (root) {
     cJSON *day_data = find(root, "data");
     if (day_data) {
-      print_multiline(day_data->valuestring, rootx, rooty+2);
+      print_multiline(day_data->valuestring, rootx, rooty + 2);
     }
   } else {
-    move(rooty+2, rootx);
+    move(rooty + 2, rootx);
     printw("No entry.");
   }
 }
 
-void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int date_offset) {
+void print_cal_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int calendar_scroll, int date_offset) {
   int width;
   int height;
   getmaxyx(w, height, width);
@@ -153,12 +153,20 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int da
       break;
     }
 
+    char buf[256];
+    sprintf(buf, "%d-%2.2d-%2.2d", 1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday);
+    cJSON *root = find(cjson, buf);
+    if (root) {
+      attron(A_BOLD);
+    }
+
     if (i == date_offset + calendar_scroll * 7) {
       color_set(1, NULL);
     }
 
     printw("%d", tm->tm_mday);
     color_set(0, NULL);
+    attroff(A_BOLD);
 
     if (tm->tm_mday == 1) {
       move(line, rootx);
@@ -218,7 +226,7 @@ int main() {
       break;
     }
 
-    print_cal_pane(w, 0, 0, calendar_scroll, date_offset);
+    print_cal_pane(w, cjson, 0, 0, calendar_scroll, date_offset);
     print_day_pane(w, cjson, 27, 0, date_offset);
 
     refresh();
