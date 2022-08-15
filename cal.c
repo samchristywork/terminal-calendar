@@ -185,6 +185,11 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
+  if (has_colors() == FALSE) {
+    fprintf(stderr, "Terminal does not support color.\n");
+    exit(EXIT_FAILURE);
+  }
+
   noecho();
   curs_set(0);
   keypad(w, TRUE);
