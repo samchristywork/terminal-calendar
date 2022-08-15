@@ -5,8 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define ONEDAY 60 * 60 * 24
+
+FILE *logfile;
+cJSON *cjson;
+int modified = 0;
+char statusline[256];
 
 time_t startup_time;
 
@@ -18,10 +24,16 @@ char *months_short[] = {"Jan", "Feb", "Mar", "Apr",
                         "May", "Jun", "Jul", "Aug",
                         "Sep", "Oct", "Nov", "Dec"};
 
+#define flog(...) fprintf(logfile, ##__VA_ARGS__);
+
 void signal_handler(int sig) {
   endwin();
   clear();
   refresh();
+}
+
+void set_statusline(char *str) {
+  strcpy(statusline, str);
 }
 
 cJSON *find(cJSON *tree, char *str) {
@@ -179,6 +191,9 @@ void print_cal_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int calendar_
 }
 
 int main() {
+  set_statusline("hi");
+
+  logfile = fopen("log", "wb");
 
   FILE *f = fopen("data.json", "rb");
   if (!f) {
@@ -217,7 +232,9 @@ int main() {
   startup_time = time(0);
 
   int c = 0;
-  while (c != 'q') {
+  int running = 1;
+  while (1) {
+    set_statusline("");
     switch (c) {
     case ('j'):
       date_offset += 7;
@@ -241,8 +258,24 @@ int main() {
       break;
     }
 
-    print_cal_pane(w, cjson, 0, 0, calendar_scroll, date_offset);
-    print_day_pane(w, cjson, 27, 0, date_offset);
+    if (running == 0) {
+      break;
+    }
+
+    print_cal_pane(w, 0, 0, calendar_scroll, date_offset);
+    print_day_pane(w, 27, 0, date_offset);
+
+    if (modified) {
+      move(0, 0);
+      printw("(*)");
+    }
+
+    int width;
+    int height;
+    getmaxyx(w, height, width);
+    statusline[200] = 0;
+    move(height - 1, 0);
+    printw(statusline);
 
     refresh();
     c = getch();
@@ -252,4 +285,5 @@ int main() {
   endwin();
   refresh();
   cJSON_Delete(cjson);
+  fclose(logfile);
 }
