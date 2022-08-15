@@ -1,3 +1,4 @@
+#include <cjson/cJSON.h>
 #include <curses.h>
 #include <signal.h>
 #include <stdio.h>
@@ -21,6 +22,50 @@ void signal_handler(int sig) {
   endwin();
   clear();
   refresh();
+}
+
+cJSON *find(cJSON *tree, char *str) {
+  cJSON *node = NULL;
+
+  if (tree) {
+    node = tree->child;
+    while (1) {
+      if (!node) {
+        break;
+      }
+      if (strcmp(str, node->string) == 0) {
+        break;
+      }
+      node = node->next;
+    }
+  }
+  return node;
+}
+
+cJSON *readJSONFile(FILE *f) {
+
+  fseek(f, 0, SEEK_END);
+  int size = ftell(f);
+  rewind(f);
+
+  char buffer[size + 1];
+  buffer[size] = 0;
+  int ret = fread(buffer, 1, size, f);
+  if (ret != size) {
+    fprintf(stderr, "Could not read the expected number of bytes.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  cJSON *cjson = cJSON_Parse(buffer);
+  if (!cjson) {
+    const char *error_ptr = cJSON_GetErrorPtr();
+    if (error_ptr) {
+      fprintf(stderr, "Error before: %s\n", error_ptr);
+    }
+    cJSON_Delete(cjson);
+    exit(EXIT_FAILURE);
+  }
+  return cjson;
 }
 
 void print_multiline(char *str, int rootx, int rooty) {

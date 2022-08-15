@@ -1,6 +1,6 @@
 CC := gcc
 
-LIBS := -lncurses
+LIBS := -lncurses -lcjson
 
 all: build/cal
 
