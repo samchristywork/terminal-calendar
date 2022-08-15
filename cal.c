@@ -77,7 +77,17 @@ cJSON *readJSONFile(FILE *f) {
     cJSON_Delete(handle);
     exit(EXIT_FAILURE);
   }
-  return cjson;
+  return handle;
+}
+
+void save() {
+  FILE *f = fopen("data.json", "wb");
+  char *str = cJSON_Print(cjson);
+  fprintf(f, str);
+  fclose(f);
+  free(str);
+  modified = 0;
+  set_statusline("File saved.");
 }
 
 void print_multiline(char *str, int rootx, int rooty) {
