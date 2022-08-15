@@ -95,7 +95,7 @@ void print_multiline(char *str, int rootx, int rooty) {
   free(data);
 }
 
-void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
+void print_day_pane(WINDOW *w, cJSON *cjson, int rootx, int rooty, int date_offset) {
 
   time_t selected_day = startup_time + date_offset * ONEDAY;
   struct tm *selected = localtime(&selected_day);
@@ -110,6 +110,18 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   getmaxyx(w, height, width);
   move(rooty + 1, rootx);
   hline('-', width - rootx);
+
+  strftime(buf, 256, "%Y-%m-%d", selected);
+  cJSON *root = find(cjson, buf);
+  if (root) {
+    cJSON *day_data = find(root, "data");
+    if (day_data) {
+      print_multiline(day_data->valuestring, rootx, rooty+2);
+    }
+  } else {
+    move(rooty+2, rootx);
+    printw("No entry.");
+  }
 }
 
 void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int date_offset) {
@@ -207,7 +219,7 @@ int main() {
     }
 
     print_cal_pane(w, 0, 0, calendar_scroll, date_offset);
-    print_day_pane(w, 27, 0, date_offset);
+    print_day_pane(w, cjson, 27, 0, date_offset);
 
     refresh();
     c = getch();
@@ -216,4 +228,5 @@ int main() {
   delwin(w);
   endwin();
   refresh();
+  cJSON_Delete(cjson);
 }
