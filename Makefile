@@ -1,6 +1,7 @@
 CC := gcc
 
 LIBS := -lncurses -lcjson
+CFLAGS := -g -Wall -Wpedantic
 
 all: build/cal
 

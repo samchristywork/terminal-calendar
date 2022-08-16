@@ -16,13 +16,17 @@ char statusline[256];
 
 time_t startup_time;
 
-char *months[] = {"January", "February", "March", "April",
-                  "May", "June", "July", "August",
-                  "September", "October", "November", "December"};
+char *months[] = {"January",   "February", "March",    "April",
+                  "May",       "June",     "July",     "August",
+                  "September", "October",  "November", "December"};
 
-char *months_short[] = {"Jan", "Feb", "Mar", "Apr",
-                        "May", "Jun", "Jul", "Aug",
-                        "Sep", "Oct", "Nov", "Dec"};
+char *months_short[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+char *days[] = {"Monday", "Tuesday",  "Wednesday", "Thursday",
+                "Friday", "Saturday", "Sunday"};
+
+char *days_short[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 #define flog(...) fprintf(logfile, ##__VA_ARGS__);
 
@@ -32,9 +36,7 @@ void signal_handler(int sig) {
   refresh();
 }
 
-void set_statusline(char *str) {
-  strcpy(statusline, str);
-}
+void set_statusline(char *str) { strcpy(statusline, str); }
 
 cJSON *find(cJSON *tree, char *str) {
   cJSON *node = NULL;
@@ -146,7 +148,8 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   }
 }
 
-void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int date_offset) {
+void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
+                    int date_offset) {
   int width;
   int height;
   getmaxyx(w, height, width);
@@ -176,7 +179,8 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int da
     }
 
     char buf[256];
-    sprintf(buf, "%d-%2.2d-%2.2d", 1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday);
+    sprintf(buf, "%d-%2.2d-%2.2d", 1900 + tm->tm_year, tm->tm_mon + 1,
+            tm->tm_mday);
     cJSON *root = find(cjson, buf);
     if (root) {
       attron(A_BOLD);
@@ -252,8 +256,6 @@ void edit_file(int date_offset) {
 }
 
 int main() {
-  set_statusline("hi");
-
   logfile = fopen("log", "wb");
 
   FILE *f = fopen("data.json", "rb");
@@ -282,6 +284,10 @@ int main() {
 
   start_color();
   init_pair(1, COLOR_BLACK, COLOR_WHITE);
+  init_pair(2, COLOR_GREEN, COLOR_BLACK);
+  init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+  init_pair(4, COLOR_RED, COLOR_BLACK);
+  init_pair(5, COLOR_BLUE, COLOR_BLACK);
 
   struct sigaction act;
   bzero(&act, sizeof(struct sigaction));
@@ -315,11 +321,14 @@ int main() {
     case ('s'):
       save();
       break;
+    case ('\n'):
+      edit_date(tag);
+      break;
     case (' '):
-      edit_file(date_offset);
+      edit_date(tag);
       break;
     case ('i'):
-      edit_file(date_offset);
+      edit_date(tag);
       break;
     case ('q'):
       if (!modified) {
