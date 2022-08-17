@@ -324,45 +324,71 @@ int main() {
     strftime(tag, 256, "%Y-%m-%d", selected);
 
     set_statusline("");
+
     switch (c) {
+
     case ('0'):
       date_offset = 0;
       break;
+
+    case ('r'):
+      clear();
+      for (int i = 0; i < 7; i++) {
+        move(10 + i, 10);
+        printw("%d %s", i, days_short[i]);
+      }
+      c = getch();
+      if (c >= '0' && c <= '6') {
+        edit_date(days_short[c - '0']);
+      }
+      break;
+
     case ('j'):
       date_offset += 7;
       break;
+
     case ('k'):
       date_offset -= 7;
       break;
+
     case ('l'):
       date_offset++;
       break;
+
     case ('h'):
       date_offset--;
       break;
+
     case ('s'):
       save();
       break;
+
     case ('\n'):
       edit_date(tag);
       break;
+
     case (' '):
       edit_date(tag);
       break;
+
     case ('i'):
       edit_date(tag);
       break;
+
     case ('q'):
       if (!modified) {
         running = 0;
       }
       break;
+
     case (KEY_DOWN):
       calendar_scroll++;
       break;
+
     case (KEY_UP):
       calendar_scroll--;
       break;
+
     default:
       break;
     }
