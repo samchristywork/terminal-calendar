@@ -109,7 +109,25 @@ void print_multiline(char *str, int rootx, int rooty) {
     if (ptr[i] == '\n') {
       ptr[i] = 0;
       move(rooty + line, rootx);
+      if (ptr[0] == '+') {
+        color_set(2, NULL);
+        attron(A_BOLD);
+      }
+      if (ptr[0] == 'o') {
+        color_set(3, NULL);
+        attron(A_BOLD);
+      }
+      if (ptr[0] == '-') {
+        color_set(4, NULL);
+        attron(A_BOLD);
+      }
+      if (ptr[0] == 'x') {
+        color_set(5, NULL);
+        attron(A_BOLD);
+      }
       printw("%s", ptr);
+      color_set(0, NULL);
+      attroff(A_BOLD);
       ptr += i + 1;
       i = 0;
       line++;
