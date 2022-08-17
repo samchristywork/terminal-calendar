@@ -159,16 +159,31 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   move(rooty + 1, rootx);
   hline('-', width - rootx);
 
-  strftime(buf, 256, "%Y-%m-%d", selected);
-  cJSON *root = find(cjson, buf);
-  if (root) {
-    cJSON *day_data = find(root, "data");
-    if (day_data) {
-      print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
+  {
+    strftime(buf, 256, "%Y-%m-%d", selected);
+    cJSON *root = find(cjson, buf);
+    if (root) {
+      cJSON *day_data = find(root, "data");
+      if (day_data) {
+        print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
+      }
+    } else {
+      move(rooty + 2, rootx);
+      printw("No entry.");
     }
-  } else {
-    move(rooty + 2, rootx);
-    printw("No entry.");
+  }
+  {
+    cJSON *root = find(cjson, days_short[selected->tm_wday]);
+    if (root) {
+      cJSON *day_data = find(root, "data");
+      if (day_data) {
+        move(height / 2 + 0, rootx);
+        printw("Recurring");
+        move(height / 2 + 1, rootx);
+        hline('-', width);
+        print_multiline(day_data->valuestring, rootx, height / 2 + 2, width - rootx);
+      }
+    }
   }
 }
 
