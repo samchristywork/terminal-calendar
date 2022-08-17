@@ -16,14 +16,14 @@ char statusline[256];
 
 time_t startup_time;
 
-char *months[] = {"January",   "February", "March",    "April",
-                  "May",       "June",     "July",     "August",
-                  "September", "October",  "November", "December"};
+char *months[] = {"January", "February", "March", "April",
+                  "May", "June", "July", "August",
+                  "September", "October", "November", "December"};
 
 char *months_short[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-char *days[] = {"Monday", "Tuesday",  "Wednesday", "Thursday",
+char *days[] = {"Monday", "Tuesday", "Wednesday", "Thursday",
                 "Friday", "Saturday", "Sunday"};
 
 char *days_short[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
@@ -180,18 +180,20 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   move(rooty + 1, rootx + 4);
   hline('-', 21);
 
-  for (int i = 0;; i++) {
+  struct tm *tm = localtime(&initial_time);
+  move(rooty + 1, rootx);
+  printw("'%d", tm->tm_year - 100);
+  int off = tm->tm_wday;
+  int year = tm->tm_year;
+  int mon = tm->tm_mon;
+  int mday = tm->tm_mday;
 
+  for (int i = -tm->tm_wday;; i++) {
     time_t t = initial_time + i * ONEDAY;
     struct tm *tm = localtime(&t);
 
-    if (i == 0) {
-      move(rooty + 1, rootx);
-      printw("'%d", tm->tm_year - 100);
-    }
-
-    int line = rooty + 2 + i / 7;
-    move(line, rootx + (i % 7) * 3 + 4);
+    int line = rooty + 2 + (i + off) / 7;
+    move(line, rootx + ((i + off) % 7) * 3 + 4);
     if (line > height - 2) {
       break;
     }
@@ -222,12 +224,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   vline('|', height - 1);
 }
 
-void edit_file(int date_offset) {
-  time_t selected_day = startup_time + date_offset * ONEDAY;
-  struct tm *selected = localtime(&selected_day);
-
-  char tag[256];
-  strftime(tag, 256, "%Y-%m-%d", selected);
+void edit_date(char *tag) {
   cJSON *root = find(cjson, tag);
   if (!root) {
     root = cJSON_CreateObject();
@@ -319,6 +316,13 @@ int main() {
   int c = 0;
   int running = 1;
   while (1) {
+
+    time_t selected_day = startup_time + date_offset * ONEDAY;
+    struct tm *selected = localtime(&selected_day);
+
+    char tag[256];
+    strftime(tag, 256, "%Y-%m-%d", selected);
+
     set_statusline("");
     switch (c) {
     case ('0'):
