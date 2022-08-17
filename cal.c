@@ -92,7 +92,7 @@ void save() {
   set_statusline("File saved.");
 }
 
-void print_multiline(char *str, int rootx, int rooty) {
+void print_multiline(char *str, int rootx, int rooty, int width) {
 
   char *data = malloc(strlen(str) + 1);
   strcpy(data, str);
@@ -100,13 +100,7 @@ void print_multiline(char *str, int rootx, int rooty) {
   int line = 0;
 
   for (int i = 0;; i++) {
-    if (ptr[i] == 0) {
-      move(rooty + line, rootx);
-      printw("%s", ptr);
-      break;
-    }
-
-    if (ptr[i] == '\n') {
+    if (ptr[i] == '\n' || ptr[i] == 0) {
       ptr[i] = 0;
       move(rooty + line, rootx);
       if (ptr[0] == '+') {
@@ -125,12 +119,18 @@ void print_multiline(char *str, int rootx, int rooty) {
         color_set(5, NULL);
         attron(A_BOLD);
       }
+      if (strlen(ptr) > width) {
+        ptr[width] = 0;
+      }
       printw("%s", ptr);
       color_set(0, NULL);
       attroff(A_BOLD);
       ptr += i + 1;
       i = 0;
       line++;
+    }
+    if (ptr[i] == 0) {
+      break;
     }
   }
 
@@ -158,7 +158,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   if (root) {
     cJSON *day_data = find(root, "data");
     if (day_data) {
-      print_multiline(day_data->valuestring, rootx, rooty + 2);
+      print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
     }
   } else {
     move(rooty + 2, rootx);
