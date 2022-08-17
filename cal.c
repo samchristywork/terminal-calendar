@@ -26,7 +26,7 @@ char *months_short[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 char *days[] = {"Monday", "Tuesday", "Wednesday", "Thursday",
                 "Friday", "Saturday", "Sunday"};
 
-char *days_short[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 #define flog(...) fprintf(logfile, ##__VA_ARGS__);
 
@@ -247,7 +247,7 @@ void edit_date(char *tag) {
     fclose(tmpfile);
 
     char command[256];
-    sprintf(command, "%s %s", "st -e nvim", filename);
+    sprintf(command, "%s %s", "nvim", filename);
     system(command);
 
     tmpfile = fopen(filename, "rb");
@@ -332,15 +332,7 @@ int main() {
       break;
 
     case ('r'):
-      clear();
-      for (int i = 0; i < 7; i++) {
-        move(10 + i, 10);
-        printw("%d %s", i, days_short[i]);
-      }
-      c = getch();
-      if (c >= '0' && c <= '6') {
-        edit_date(days_short[c - '0']);
-      }
+      edit_date(days_short[selected->tm_wday]);
       break;
 
     case ('j'):
@@ -421,4 +413,6 @@ int main() {
   refresh();
   cJSON_Delete(cjson);
   fclose(logfile);
+
+  printf("\33[H\33[2J");
 }
