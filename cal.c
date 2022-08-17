@@ -29,6 +29,12 @@ char *days[] = {"Monday", "Tuesday", "Wednesday", "Thursday",
 char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 #define flog(...) fprintf(logfile, ##__VA_ARGS__);
+#define set_statusline(...)      \
+  {                              \
+    char buf[256];               \
+    sprintf(buf, ##__VA_ARGS__); \
+    _set_statusline(buf);        \
+  }
 
 void signal_handler(int sig) {
   endwin();
@@ -36,7 +42,7 @@ void signal_handler(int sig) {
   refresh();
 }
 
-void set_statusline(char *str) { strcpy(statusline, str); }
+void _set_statusline(char *str) { strcpy(statusline, str); }
 
 cJSON *find(cJSON *tree, char *str) {
   cJSON *node = NULL;
