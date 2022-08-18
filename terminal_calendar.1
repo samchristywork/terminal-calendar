@@ -1,0 +1,42 @@
+.TH terminal_calendar "1" "August 2022" "Terminal Calendar" "User Commands"
+.SH NAME
+terminal_calendar \- Manage tasks and scheduled events in your terminal.
+.SH SYNOPSIS
+.B terminal_calendar
+[\fI\,OPTION\/\fR]...
+.SH DESCRIPTION
+.PP
+Opens an interactive ncurses-based interface for keeping track of meetings,
+goals, or tasks.
+.TP
+\fB\-f\fR, \fB\-\-file\fR
+The file that contains the calendar data. Default "data.json".
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print out the usage message.
+.TP
+\fB\-n\fR, \fB\-\-no-clear\fR
+Don't clear the terminal on exit. The terminal is cleared by default due to
+problems that arise when using certain editors.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Verbose mode.
+.SH AUTHOR
+Written by Sam Christy.
+.SH "REPORTING BUGS"
+Git repository: <https://www.github.com/samchristywork/terminal-calendar/issues>
+.SH COPYRIGHT
+Copyright \(co 2022 Sam Christy
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH "SEE ALSO"
+.BR cal (1),
+.BR time (2),
+.BR strptime (3)
+.PP
+.br
+Full documentation available in the source repository
+.br
+<https://www.github.com/samchristywork/dsml2/issues>.
