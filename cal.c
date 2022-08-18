@@ -7,6 +7,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "version.h"
+
 #define ONEDAY 60 * 60 * 24
 
 FILE *logfile;
