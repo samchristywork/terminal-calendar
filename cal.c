@@ -1,5 +1,6 @@
 #include <cjson/cJSON.h>
 #include <curses.h>
+#include <getopt.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,7 @@ FILE *logfile;
 cJSON *cjson;
 int modified = 0;
 char statusline[256];
+char *calendar_filename;
 
 time_t startup_time;
 
@@ -100,7 +102,7 @@ cJSON *readJSONFile(FILE *f) {
 }
 
 void save() {
-  FILE *f = fopen("data.json", "wb");
+  FILE *f = fopen(calendar_filename, "wb");
   char *str = cJSON_Print(cjson);
   fprintf(f, str);
   fclose(f);
@@ -302,10 +304,68 @@ void edit_date(char *tag) {
   }
 }
 
-int main() {
+void usage(char *argv[]) {
+  fprintf(stderr,
+          "Usage: %s [options]\n"
+          " -f,--file      Calendar file to use. Default \"calendar.json\".\n"
+          " -h,--help      Print this usage message.\n"
+          " -n,--no-clear  Do not clear the screen on shutdown.\n"
+          " -v,--verbose   Display additional logging information.\n"
+          "",
+          argv[0]);
+  exit(EXIT_FAILURE);
+}
+
+int main(int argc, char *argv[]) {
+
+  int no_clear = 0;
+  int verbose = 0;
+  calendar_filename = NULL;
+
+  int opt;
+  int option_index = 0;
+  char *optstring = "f:hnv";
+  static struct option long_options[] = {
+      {"file", required_argument, 0, 'f'},
+      {"help", no_argument, 0, 'h'},
+      {"no-clear", no_argument, 0, 'n'},
+      {"verbose", no_argument, 0, 'v'},
+      {0, 0, 0, 0},
+  };
+  while ((opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1) {
+    if (opt == 'f') {
+      calendar_filename = malloc(strlen(optarg) + 1);
+      strcpy(calendar_filename, optarg);
+    } else if (opt == 'h') {
+      usage(argv);
+    } else if (opt == 'n') {
+      no_clear = 1;
+    } else if (opt == 'v') {
+      verbose = 1;
+    } else if (opt == '?') {
+      usage(argv);
+    } else {
+      puts(optarg);
+    }
+  }
+
+  if (optind < argc) {
+    int i = optind;
+    while (i < argc) {
+      fprintf(stdout, "Got additional argument: %s\n", argv[i]);
+      i++;
+    }
+  }
+
   logfile = fopen("log", "wb");
 
-  FILE *f = fopen("data.json", "rb");
+  if (!calendar_filename) {
+    char *f = "data.json";
+    calendar_filename = malloc(strlen(f) + 1);
+    strcpy(calendar_filename, f);
+  }
+
+  FILE *f = fopen(calendar_filename, "rb");
   cjson = readJSONFile(f);
   if (f) {
     fclose(f);
@@ -442,6 +502,9 @@ int main() {
   refresh();
   cJSON_Delete(cjson);
   fclose(logfile);
+  free(calendar_filename);
 
-  printf("\33[H\33[2J");
+  if (!no_clear) {
+    printf("\33[H\33[2J");
+  }
 }
