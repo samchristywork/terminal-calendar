@@ -414,10 +414,18 @@ int main(int argc, char *argv[]) {
 
     set_statusline("");
 
+    cJSON *n;
+
     switch (c) {
 
     case ('0'):
       date_offset = 0;
+      break;
+
+    case ('d'):
+      cJSON_DeleteItemFromObject(cjson, tag);
+      set_statusline("Deleted entry \"%s\".", tag);
+      modified = 1;
       break;
 
     case ('r'):
