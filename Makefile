@@ -9,7 +9,7 @@ all: build/terminal_calendar
 
 build/terminal_calendar: cal.c
 	mkdir -p build/
-	${CC} $^ -o $@ ${LIBS}
+	${CC} ${CFLAGS} $^ -o $@ ${LIBS}
 
 install: build/terminal_calendar
 	@echo "Installing terminal_calendar Version" $(VERSION)

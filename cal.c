@@ -35,7 +35,7 @@ char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 #define flog(...) fprintf(logfile, ##__VA_ARGS__);
 #define set_statusline(...)      \
   {                              \
-    char buf[256];               \
+    char buf[512];               \
     sprintf(buf, ##__VA_ARGS__); \
     _set_statusline(buf);        \
   }
@@ -218,9 +218,6 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   move(rooty + 1, rootx);
   printw("'%d", tm->tm_year - 100);
   int off = tm->tm_wday;
-  int year = tm->tm_year;
-  int mon = tm->tm_mon;
-  int mday = tm->tm_mday;
 
   for (int i = -tm->tm_wday;; i++) {
     time_t t = initial_time + i * ONEDAY;
@@ -412,9 +409,7 @@ int main(int argc, char *argv[]) {
     char tag[256];
     strftime(tag, 256, "%Y-%m-%d", selected);
 
-    set_statusline("");
-
-    cJSON *n;
+    set_statusline(" ");
 
     switch (c) {
 
