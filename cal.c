@@ -64,16 +64,23 @@ cJSON *find(cJSON *tree, char *str) {
 
 cJSON *readJSONFile(FILE *f) {
 
-  fseek(f, 0, SEEK_END);
-  int size = ftell(f);
-  rewind(f);
+  char *buffer;
 
-  char buffer[size + 1];
-  buffer[size] = 0;
-  int ret = fread(buffer, 1, size, f);
-  if (ret != size) {
-    fprintf(stderr, "Could not read the expected number of bytes.\n");
-    exit(EXIT_FAILURE);
+  if (f) {
+    fseek(f, 0, SEEK_END);
+    int size = ftell(f);
+    rewind(f);
+
+    buffer = malloc(size + 1);
+    buffer[size] = 0;
+    int ret = fread(buffer, 1, size, f);
+    if (ret != size) {
+      fprintf(stderr, "Could not read the expected number of bytes.\n");
+      exit(EXIT_FAILURE);
+    }
+  } else {
+    buffer = malloc(3);
+    strcpy(buffer, "{}");
   }
 
   cJSON *handle = cJSON_Parse(buffer);
@@ -85,6 +92,8 @@ cJSON *readJSONFile(FILE *f) {
     cJSON_Delete(handle);
     exit(EXIT_FAILURE);
   }
+
+  free(buffer);
   return handle;
 }
 
@@ -295,13 +304,10 @@ int main() {
   logfile = fopen("log", "wb");
 
   FILE *f = fopen("data.json", "rb");
-  if (!f) {
-    perror("fopen");
-    exit(EXIT_FAILURE);
-  }
-
   cjson = readJSONFile(f);
-  fclose(f);
+  if (f) {
+    fclose(f);
+  }
 
   WINDOW *w;
   if ((w = initscr()) == NULL) {
