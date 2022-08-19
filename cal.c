@@ -17,6 +17,7 @@ cJSON *cjson;
 int modified = 0;
 char statusline[256];
 char *calendar_filename;
+int verbose = 0;
 
 time_t startup_time;
 
@@ -109,6 +110,9 @@ void save() {
   free(str);
   modified = 0;
   set_statusline("File saved.");
+  if (verbose) {
+    fprintf(logfile, "Saving file.\n");
+  }
 }
 
 void print_multiline(char *str, int rootx, int rooty, int width) {
@@ -258,6 +262,10 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
 }
 
 void edit_date(char *tag) {
+  if (verbose) {
+    fprintf(logfile, "Editing tag \"%s\".\n", tag);
+  }
+
   cJSON *root = find(cjson, tag);
   if (!root) {
     root = cJSON_CreateObject();
@@ -318,7 +326,6 @@ void usage(char *argv[]) {
 int main(int argc, char *argv[]) {
 
   int no_clear = 0;
-  int verbose = 0;
   calendar_filename = NULL;
 
   int opt;
@@ -364,12 +371,18 @@ int main(int argc, char *argv[]) {
     strcpy(calendar_filename, f);
   }
 
+  if (verbose) {
+    fprintf(logfile, "Using \"%s\" as save file.\n", calendar_filename);
+  }
   FILE *f = fopen(calendar_filename, "rb");
   cjson = readJSONFile(f);
   if (f) {
     fclose(f);
   }
 
+  if (verbose) {
+    fprintf(logfile, "Initializing ncurses.\n");
+  }
   WINDOW *w;
   if ((w = initscr()) == NULL) {
     fprintf(stderr, "Error initializing ncurses.\n");
@@ -401,6 +414,9 @@ int main(int argc, char *argv[]) {
   int date_offset = 0;
   startup_time = time(0);
 
+  if (verbose) {
+    fprintf(logfile, "Displaying calendar.\n");
+  }
   int c = 0;
   int running = 1;
   while (1) {
@@ -420,6 +436,9 @@ int main(int argc, char *argv[]) {
       break;
 
     case ('d'):
+      if (verbose) {
+        fprintf(logfile, "Deleting calendar entry.\n");
+      }
       cJSON_DeleteItemFromObject(cjson, tag);
       set_statusline("Deleted entry \"%s\".", tag);
       modified = 1;
@@ -427,6 +446,10 @@ int main(int argc, char *argv[]) {
 
     case ('r'):
       edit_date(days_short[selected->tm_wday]);
+      break;
+
+    case ('h'):
+      date_offset--;
       break;
 
     case ('j'):
@@ -439,10 +462,6 @@ int main(int argc, char *argv[]) {
 
     case ('l'):
       date_offset++;
-      break;
-
-    case ('h'):
-      date_offset--;
       break;
 
     case ('s'):
@@ -500,6 +519,10 @@ int main(int argc, char *argv[]) {
 
     refresh();
     c = getch();
+  }
+
+  if (verbose) {
+    fprintf(logfile, "Cleaning up.\n");
   }
 
   delwin(w);
