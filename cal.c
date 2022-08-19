@@ -144,10 +144,12 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
       printw("%s", ptr);
       color_set(0, NULL);
       attroff(A_BOLD);
+
       ptr += i + 1;
       i = 0;
       line++;
     }
+
     if (ptr[i] == 0) {
       break;
     }
@@ -294,7 +296,7 @@ void edit_date(char *tag) {
       exit(EXIT_FAILURE);
     }
 
-    cJSON_Delete(day_data);
+    cJSON_DeleteItemFromObject(root, "data");
     day_data = cJSON_CreateString(buffer);
     cJSON_AddItemToObject(root, "data", day_data);
     modified = 1;
