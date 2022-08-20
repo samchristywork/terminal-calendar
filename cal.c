@@ -211,6 +211,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   int width;
   int height;
   getmaxyx(w, height, width);
+  height = height + width - width;
 
   time_t initial_time = startup_time - (calendar_scroll * 7) * ONEDAY;
 
@@ -513,6 +514,8 @@ int main(int argc, char *argv[]) {
     int width;
     int height;
     getmaxyx(w, height, width);
+    height = height + width - width;
+
     statusline[200] = 0;
     move(height - 1, 0);
     printw(statusline);
