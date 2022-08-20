@@ -10,13 +10,19 @@ looks like:
   <img alt="Screenshot" src="./sample.png">
 <p>
 
+The left pane consists of a calendar that can be navigated using the h, j, k,
+and l keys. You can press "Enter" to edit the data associated with that day
+using a text editor.
+
 ## Key Bindings
+
+This is a comprehensive list of the default key bindings for this program:
 
 | Key            | Action                                            |
 |----------------|---------------------------------------------------|
 | h,j,k,l        | Move the cursor left, down, up, or right.         |
 | i,Space,Return | Edit the day under the cursor.                    |
-| s              | Save the data to the calendar.json file.          |
+| s              | Save the data to the `calendar.json` file.        |
 | q              | Quit.                                             |
 | 0              | Move the cursor to the current day.               |
 | d              | Delete the data for the day under the cursor.     |
