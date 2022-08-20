@@ -18,16 +18,16 @@ using a text editor.
 
 This is a comprehensive list of the default key bindings for this program:
 
-| Key            | Action                                            |
-|----------------|---------------------------------------------------|
-| h,j,k,l        | Move the cursor left, down, up, or right.         |
-| i,Space,Return | Edit the day under the cursor.                    |
-| s              | Save the data to the `calendar.json` file.        |
-| q              | Quit.                                             |
-| 0              | Move the cursor to the current day.               |
-| d              | Delete the data for the day under the cursor.     |
-| r              | Edit the recurring task for that day of the week. |
-| Cursor keys    | Scroll the calendar.                              |
+| Key              | Action                                            |
+|------------------|---------------------------------------------------|
+| h, j, k, l       | Move the cursor left, down, up, or right.         |
+| i, Space, Return | Edit the day under the cursor.                    |
+| s                | Save the data to the `calendar.json` file.        |
+| q                | Quit.                                             |
+| 0                | Move the cursor to the current day.               |
+| d                | Delete the data for the day under the cursor.     |
+| r                | Edit the recurring task for that day of the week. |
+| Cursor keys      | Scroll the calendar.                              |
 
 ## Usage
 
