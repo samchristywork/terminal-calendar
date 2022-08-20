@@ -18,6 +18,7 @@ int modified = 0;
 char statusline[256];
 char *calendar_filename;
 int verbose = 0;
+char *text_editor = 0;
 
 time_t startup_time;
 
@@ -289,7 +290,7 @@ void edit_date(char *tag) {
     fclose(tmpfile);
 
     char command[256];
-    sprintf(command, "%s %s", "nvim", filename);
+    sprintf(command, "%s %s", text_editor, filename);
     system(command);
 
     tmpfile = fopen(filename, "rb");
@@ -315,6 +316,7 @@ void edit_date(char *tag) {
 void usage(char *argv[]) {
   fprintf(stderr,
           "Usage: %s [options]\n"
+          " -e,--editor    The command representing the text editor to use (default vim).\n"
           " -f,--file      Calendar file to use. Default \"calendar.json\".\n"
           " -h,--help      Print this usage message.\n"
           " -n,--no-clear  Do not clear the screen on shutdown.\n"
@@ -331,16 +333,21 @@ int main(int argc, char *argv[]) {
 
   int opt;
   int option_index = 0;
-  char *optstring = "f:hnv";
+  char *optstring = "e:f:hnv";
   static struct option long_options[] = {
+      {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
       {"help", no_argument, 0, 'h'},
       {"no-clear", no_argument, 0, 'n'},
       {"verbose", no_argument, 0, 'v'},
       {0, 0, 0, 0},
   };
+
   while ((opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1) {
-    if (opt == 'f') {
+    if (opt == 'e') {
+      text_editor = malloc(strlen(optarg) + 1);
+      strcpy(text_editor, optarg);
+    } else if (opt == 'f') {
       calendar_filename = malloc(strlen(optarg) + 1);
       strcpy(calendar_filename, optarg);
     } else if (opt == 'h') {
@@ -362,6 +369,11 @@ int main(int argc, char *argv[]) {
       fprintf(stdout, "Got additional argument: %s\n", argv[i]);
       i++;
     }
+  }
+
+  if (!text_editor) {
+    text_editor = malloc(strlen("vim") + 1);
+    strcpy(text_editor, "vim");
   }
 
   logfile = fopen("log", "wb");
@@ -534,6 +546,7 @@ int main(int argc, char *argv[]) {
   cJSON_Delete(cjson);
   fclose(logfile);
   free(calendar_filename);
+  free(text_editor);
 
   if (!no_clear) {
     printf("\33[H\33[2J");
