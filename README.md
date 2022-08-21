@@ -35,11 +35,15 @@ The terminal calendar can be invoked as described in the usage statement:
 
 ```
 Usage: terminal_calendar [options]
+ -e,--editor    The command representing the text editor to use (default vim).
  -f,--file      Calendar file to use. Default "calendar.json".
  -h,--help      Print this usage message.
  -n,--no-clear  Do not clear the screen on shutdown.
  -v,--verbose   Display additional logging information.
 ```
+
+Users can also configure the editor by setting the `EDITOR` environment
+variable.
 
 ## Dependencies
 
