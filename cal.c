@@ -322,6 +322,8 @@ int main(int argc, char *argv[]) {
   int no_clear = 0;
   calendar_filename = NULL;
 
+  text_editor = getenv("EDITOR");
+
   int opt;
   int option_index = 0;
   char *optstring = "e:f:hnv";
