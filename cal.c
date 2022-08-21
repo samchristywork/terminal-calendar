@@ -29,18 +29,30 @@ time_t startup_time;
     _set_statusline(buf);        \
   }
 
+/*
+ * Handle ctrl-c
+ */
 void sig_term_handler(int signum, siginfo_t *info, void *ptr) {
   running = 0;
 }
 
-void signal_handler(int sig) {
+/*
+ * Handle window resize
+ */
+void resize_handler(int sig) {
   endwin();
   clear();
   refresh();
 }
 
+/*
+ * Internal function called by the set_statusline macro
+ */
 void _set_statusline(char *str) { strcpy(status_line, str); }
 
+/*
+ * Find a particular child tag of a node
+ */
 cJSON *find(cJSON *tree, char *str) {
   cJSON *node = NULL;
 
@@ -59,6 +71,9 @@ cJSON *find(cJSON *tree, char *str) {
   return node;
 }
 
+/*
+ * Read a file into a cJSON struct
+ */
 cJSON *readJSONFile(FILE *f) {
 
   char *buffer;
@@ -94,6 +109,9 @@ cJSON *readJSONFile(FILE *f) {
   return handle;
 }
 
+/*
+ * Save data to disk
+ */
 void save() {
   FILE *f = fopen(calendar_filename, "wb");
   char *str = cJSON_Print(cjson);
@@ -107,6 +125,10 @@ void save() {
   }
 }
 
+/*
+ * Print text, respecting newlines, and coloring the text based on the
+ * 1-character signifier at the beginning of the line.
+ */
 void print_multiline(char *str, int rootx, int rooty, int width) {
 
   char *data = malloc(strlen(str) + 1);
@@ -154,6 +176,9 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
   free(data);
 }
 
+/*
+ * Print the right-hand pane, with the data for that day
+ */
 void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
 
   time_t selected_day = startup_time + date_offset * ONEDAY;
@@ -170,6 +195,9 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   move(rooty + 1, rootx);
   hline('-', width - rootx);
 
+  /*
+   * Print the top pane, with the data specific to the day
+   */
   {
     strftime(buf, 256, "%Y-%m-%d", selected);
     cJSON *root = find(cjson, buf);
@@ -183,6 +211,10 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
       printw("No entry.");
     }
   }
+
+  /*
+   * Print the bottom pane, with the recurring tasks
+   */
   {
     cJSON *root = find(cjson, days_short[selected->tm_wday]);
     if (root) {
@@ -198,6 +230,9 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   }
 }
 
+/*
+ * Print the left-hand pane
+ */
 void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
                     int date_offset) {
   int width;
@@ -254,6 +289,9 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   vline('|', height - 1);
 }
 
+/*
+ * Edit a tag in the cJSON structure with the chosen text editor
+ */
 void edit_date(char *tag) {
   if (verbose) {
     fprintf(log_file, "Editing tag \"%s\".\n", tag);
@@ -324,6 +362,9 @@ int main(int argc, char *argv[]) {
 
   text_editor = getenv("EDITOR");
 
+  /*
+   * Handle command-line arguments
+   */
   int opt;
   int option_index = 0;
   char *optstring = "e:f:hnv";
@@ -364,6 +405,9 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  /*
+   * Use the default editor if none is selected
+   */
   if (!text_editor) {
     text_editor = malloc(strlen("vim") + 1);
     strcpy(text_editor, "vim");
@@ -371,12 +415,18 @@ int main(int argc, char *argv[]) {
 
   log_file = fopen("log", "wb");
 
+  /*
+   * Use the default filename if none is selected
+   */
   if (!calendar_filename) {
     char *f = "data.json";
     calendar_filename = malloc(strlen(f) + 1);
     strcpy(calendar_filename, f);
   }
 
+  /*
+   * Open the appropriate save file and read it into a cJSON struct
+   */
   if (verbose) {
     fprintf(log_file, "Using \"%s\" as save file.\n", calendar_filename);
   }
@@ -386,6 +436,9 @@ int main(int argc, char *argv[]) {
     fclose(f);
   }
 
+  /*
+   * Initialize ncurses
+   */
   if (verbose) {
     fprintf(log_file, "Initializing ncurses.\n");
   }
@@ -411,9 +464,12 @@ int main(int argc, char *argv[]) {
   init_pair(4, COLOR_RED, COLOR_BLACK);
   init_pair(5, COLOR_BLUE, COLOR_BLACK);
 
+  /*
+   * Handle signals
+   */
   struct sigaction act;
   bzero(&act, sizeof(struct sigaction));
-  act.sa_handler = signal_handler;
+  act.sa_handler = resize_handler;
   sigaction(SIGWINCH, &act, NULL);
 
   bzero(&act, sizeof(struct sigaction));
@@ -425,6 +481,9 @@ int main(int argc, char *argv[]) {
   int date_offset = 0;
   startup_time = time(0);
 
+  /*
+   * Main Loop
+   */
   if (verbose) {
     fprintf(log_file, "Displaying calendar.\n");
   }
@@ -514,6 +573,9 @@ int main(int argc, char *argv[]) {
       break;
     }
 
+    /*
+     * Display the left and right panes
+     */
     print_cal_pane(w, 0, 0, calendar_scroll, date_offset);
     print_day_pane(w, 27, 0, date_offset);
 
@@ -539,6 +601,9 @@ int main(int argc, char *argv[]) {
     fprintf(log_file, "Cleaning up.\n");
   }
 
+  /*
+   * Clean up
+   */
   delwin(w);
   endwin();
   refresh();
