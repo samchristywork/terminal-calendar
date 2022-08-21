@@ -136,6 +136,10 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
   char *ptr = data;
   int line = 0;
 
+  if (!ptr[0]) {
+    return;
+  }
+
   for (int i = 0;; i++) {
     if (ptr[i] == '\n' || ptr[i] == 0) {
       ptr[i] = 0;
