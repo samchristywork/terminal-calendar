@@ -14,12 +14,12 @@
 
 FILE *logfile;
 cJSON *cjson;
-int modified = 0;
-char statusline[256];
 char *calendar_filename;
-int verbose = 0;
 char *text_editor = 0;
-
+char statusline[256];
+int modified = 0;
+int running = 1;
+int verbose = 0;
 time_t startup_time;
 
 char *months[] = {"January", "February", "March", "April",
@@ -41,6 +41,10 @@ char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     sprintf(buf, ##__VA_ARGS__); \
     _set_statusline(buf);        \
   }
+
+void sig_term_handler(int signum, siginfo_t *info, void *ptr) {
+  running = 0;
+}
 
 void signal_handler(int sig) {
   endwin();
@@ -423,6 +427,11 @@ int main(int argc, char *argv[]) {
   act.sa_handler = signal_handler;
   sigaction(SIGWINCH, &act, NULL);
 
+  bzero(&act, sizeof(struct sigaction));
+  act.sa_sigaction = sig_term_handler;
+  act.sa_flags = SA_SIGINFO;
+  sigaction(SIGINT, &act, NULL);
+
   int calendar_scroll = 4;
   int date_offset = 0;
   startup_time = time(0);
@@ -431,7 +440,6 @@ int main(int argc, char *argv[]) {
     fprintf(logfile, "Displaying calendar.\n");
   }
   int c = 0;
-  int running = 1;
   while (1) {
 
     time_t selected_day = startup_time + date_offset * ONEDAY;
@@ -496,6 +504,8 @@ int main(int argc, char *argv[]) {
     case ('q'):
       if (!modified) {
         running = 0;
+      } else {
+        set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
       }
       break;
 
