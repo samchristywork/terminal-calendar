@@ -11,17 +11,17 @@
 #include "cal.h"
 #include "version.h"
 
-FILE *logfile;
+FILE *log_file;
 cJSON *cjson;
 char *calendar_filename;
 char *text_editor = 0;
-char statusline[256];
+char status_line[256];
 int modified = 0;
 int running = 1;
 int verbose = 0;
 time_t startup_time;
 
-#define flog(...) fprintf(logfile, ##__VA_ARGS__);
+#define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
   {                              \
     char buf[512];               \
@@ -39,7 +39,7 @@ void signal_handler(int sig) {
   refresh();
 }
 
-void _set_statusline(char *str) { strcpy(statusline, str); }
+void _set_statusline(char *str) { strcpy(status_line, str); }
 
 cJSON *find(cJSON *tree, char *str) {
   cJSON *node = NULL;
@@ -103,7 +103,7 @@ void save() {
   modified = 0;
   set_statusline("File saved.");
   if (verbose) {
-    fprintf(logfile, "Saving file.\n");
+    fprintf(log_file, "Saving file.\n");
   }
 }
 
@@ -256,7 +256,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
 
 void edit_date(char *tag) {
   if (verbose) {
-    fprintf(logfile, "Editing tag \"%s\".\n", tag);
+    fprintf(log_file, "Editing tag \"%s\".\n", tag);
   }
 
   cJSON *root = find(cjson, tag);
@@ -369,7 +369,7 @@ int main(int argc, char *argv[]) {
     strcpy(text_editor, "vim");
   }
 
-  logfile = fopen("log", "wb");
+  log_file = fopen("log", "wb");
 
   if (!calendar_filename) {
     char *f = "data.json";
@@ -378,7 +378,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (verbose) {
-    fprintf(logfile, "Using \"%s\" as save file.\n", calendar_filename);
+    fprintf(log_file, "Using \"%s\" as save file.\n", calendar_filename);
   }
   FILE *f = fopen(calendar_filename, "rb");
   cjson = readJSONFile(f);
@@ -387,7 +387,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (verbose) {
-    fprintf(logfile, "Initializing ncurses.\n");
+    fprintf(log_file, "Initializing ncurses.\n");
   }
   WINDOW *w;
   if ((w = initscr()) == NULL) {
@@ -426,7 +426,7 @@ int main(int argc, char *argv[]) {
   startup_time = time(0);
 
   if (verbose) {
-    fprintf(logfile, "Displaying calendar.\n");
+    fprintf(log_file, "Displaying calendar.\n");
   }
   int c = 0;
   while (1) {
@@ -447,7 +447,7 @@ int main(int argc, char *argv[]) {
 
     case ('d'):
       if (verbose) {
-        fprintf(logfile, "Deleting calendar entry.\n");
+        fprintf(log_file, "Deleting calendar entry.\n");
       }
       cJSON_DeleteItemFromObject(cjson, tag);
       set_statusline("Deleted entry \"%s\".", tag);
@@ -527,23 +527,23 @@ int main(int argc, char *argv[]) {
     getmaxyx(w, height, width);
     height = height + width - width;
 
-    statusline[200] = 0;
+    status_line[200] = 0;
     move(height - 1, 0);
-    printw(statusline);
+    printw(status_line);
 
     refresh();
     c = getch();
   }
 
   if (verbose) {
-    fprintf(logfile, "Cleaning up.\n");
+    fprintf(log_file, "Cleaning up.\n");
   }
 
   delwin(w);
   endwin();
   refresh();
   cJSON_Delete(cjson);
-  fclose(logfile);
+  fclose(log_file);
   free(calendar_filename);
   free(text_editor);
 
