@@ -8,9 +8,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "cal.h"
 #include "version.h"
-
-#define ONEDAY 60 * 60 * 24
 
 FILE *logfile;
 cJSON *cjson;
@@ -21,18 +20,6 @@ int modified = 0;
 int running = 1;
 int verbose = 0;
 time_t startup_time;
-
-char *months[] = {"January", "February", "March", "April",
-                  "May", "June", "July", "August",
-                  "September", "October", "November", "December"};
-
-char *months_short[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-char *days[] = {"Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday", "Sunday"};
-
-char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 #define flog(...) fprintf(logfile, ##__VA_ARGS__);
 #define set_statusline(...)      \
