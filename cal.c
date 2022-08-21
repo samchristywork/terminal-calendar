@@ -610,7 +610,6 @@ int main(int argc, char *argv[]) {
   cJSON_Delete(cjson);
   fclose(log_file);
   free(calendar_filename);
-  free(text_editor);
 
   if (!no_clear) {
     printf("\33[H\33[2J");
