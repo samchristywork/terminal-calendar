@@ -1,6 +1,7 @@
 #include <cjson/cJSON.h>
 #include <curses.h>
 #include <getopt.h>
+#include <regex.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +21,7 @@ int modified = 0;
 int running = 1;
 int verbose = 0;
 time_t startup_time;
+char search_string[256] = {0};
 
 #define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
@@ -28,6 +30,10 @@ time_t startup_time;
     sprintf(buf, ##__VA_ARGS__); \
     _set_statusline(buf);        \
   }
+
+#define redraw() \
+    print_cal_pane(w, 0, 0, calendar_scroll, date_offset); \
+    print_day_pane(w, 27, 0, date_offset);
 
 /*
  * Handle ctrl-c
@@ -239,6 +245,12 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
  */
 void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
                     int date_offset) {
+
+  regex_t preg;
+  if (regcomp(&preg, search_string, 0) != 0) {
+    exit(EXIT_FAILURE);
+  }
+
   int width;
   int height;
   getmaxyx(w, height, width);
@@ -273,6 +285,16 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
     cJSON *root = find(cjson, buf);
     if (root) {
       attron(A_BOLD);
+    }
+
+    if (root) {
+      cJSON *day_data = find(root, "data");
+      if (day_data) {
+        if (regexec(&preg, day_data->valuestring, 0, NULL, 0) == 0) {
+          attroff(A_BOLD);
+          color_set(6, NULL);
+        }
+      }
     }
 
     if (i == date_offset + calendar_scroll * 7) {
@@ -467,6 +489,7 @@ int main(int argc, char *argv[]) {
   init_pair(3, COLOR_YELLOW, COLOR_BLACK);
   init_pair(4, COLOR_RED, COLOR_BLACK);
   init_pair(5, COLOR_BLUE, COLOR_BLACK);
+  init_pair(6, COLOR_BLACK, COLOR_YELLOW);
 
   /*
    * Handle signals
@@ -561,6 +584,30 @@ int main(int argc, char *argv[]) {
       }
       break;
 
+    case ('/'): {
+      int width;
+      int height;
+      getmaxyx(w, height, width);
+      width = width;
+      height = height;
+      search_string[0] = 0;
+      while (1) {
+        int i = strlen(search_string);
+        search_string[i + 1] = 0;
+
+        char c = getch();
+        if (c == '\n') {
+          break;
+        }
+        search_string[i] = c;
+
+        redraw();
+        move(height - 1, 0);
+        printw(search_string);
+      }
+      refresh();
+    } break;
+
     case (KEY_DOWN):
       calendar_scroll++;
       break;
@@ -580,8 +627,7 @@ int main(int argc, char *argv[]) {
     /*
      * Display the left and right panes
      */
-    print_cal_pane(w, 0, 0, calendar_scroll, date_offset);
-    print_day_pane(w, 27, 0, date_offset);
+    redraw();
 
     if (modified) {
       move(0, 0);
