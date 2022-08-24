@@ -31,9 +31,9 @@ char search_string[256] = {0};
     _set_statusline(buf);        \
   }
 
-#define redraw() \
-    print_cal_pane(w, 0, 0, calendar_scroll, date_offset); \
-    print_day_pane(w, 27, 0, date_offset);
+#define redraw()                                         \
+  print_cal_pane(w, 0, 0, calendar_scroll, date_offset); \
+  print_day_pane(w, 27, 0, date_offset);
 
 /*
  * Handle ctrl-c
@@ -287,7 +287,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
       attron(A_BOLD);
     }
 
-    if (root) {
+    if (strlen(search_string) > 0 && root) {
       cJSON *day_data = find(root, "data");
       if (day_data) {
         if (regexec(&preg, day_data->valuestring, 0, NULL, 0) == 0) {
