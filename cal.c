@@ -368,6 +368,25 @@ void edit_date(char *tag) {
   }
 }
 
+void draw_help() {
+  char *str = ""
+              "| Key              | Action                                            |\n"
+              "|------------------|---------------------------------------------------|\n"
+              "| h, j, k, l       | Move the cursor left, down, up, or right.         |\n"
+              "| i, Space, Return | Edit the day under the cursor.                    |\n"
+              "| s                | Save the data to the `calendar.json` file.        |\n"
+              "| q                | Quit.                                             |\n"
+              "| 0                | Move the cursor to the current day.               |\n"
+              "| d                | Delete the data for the day under the cursor.     |\n"
+              "| r                | Edit the recurring task for that day of the week. |\n"
+              "| /                | Search for a string in day data using regex.      |\n"
+              "| Cursor keys      | Scroll the calendar.                              |\n"
+              "\n"
+              "Press any key to continue...\n";
+
+  print_multiline(str, 0, 0, 80);
+}
+
 void usage(char *argv[]) {
   fprintf(stderr,
           "Usage: %s [options]\n"
@@ -608,6 +627,12 @@ int main(int argc, char *argv[]) {
       refresh();
     } break;
 
+    case ('?'):
+      clear();
+      draw_help();
+      getch();
+      break;
+
     case (KEY_DOWN):
       calendar_scroll++;
       break;
@@ -642,6 +667,9 @@ int main(int argc, char *argv[]) {
     status_line[200] = 0;
     move(height - 1, 0);
     printw(status_line);
+
+    move(height - 1, width - 19);
+    printw("Type '?' for help.");
 
     refresh();
     c = getch();
