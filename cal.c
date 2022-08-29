@@ -402,6 +402,7 @@ void draw_help() {
 void usage(char *argv[]) {
   fprintf(stderr,
           "Usage: %s [options]\n"
+          " -c,--command   The command to be run when \"printing\" (default `./print.sh`).\n"
           " -e,--editor    The command representing the text editor to use (default vim).\n"
           " -f,--file      Calendar file to use. Default \"calendar.json\".\n"
           " -h,--help      Print this usage message.\n"
@@ -424,8 +425,9 @@ int main(int argc, char *argv[]) {
    */
   int opt;
   int option_index = 0;
-  char *optstring = "e:f:hnv";
+  char *optstring = "c:e:f:hnv";
   static struct option long_options[] = {
+      {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
       {"help", no_argument, 0, 'h'},
@@ -435,7 +437,10 @@ int main(int argc, char *argv[]) {
   };
 
   while ((opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1) {
-    if (opt == 'e') {
+    if (opt == 'c') {
+      command = malloc(strlen(optarg) + 1);
+      strcpy(command, optarg);
+    } else if (opt == 'e') {
       text_editor = malloc(strlen(optarg) + 1);
       strcpy(text_editor, optarg);
     } else if (opt == 'f') {
