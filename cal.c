@@ -595,6 +595,11 @@ int main(int argc, char *argv[]) {
       save();
       break;
 
+    case ('p'):
+      save();
+      print();
+      break;
+
     case ('\n'):
       edit_date(tag);
       break;
