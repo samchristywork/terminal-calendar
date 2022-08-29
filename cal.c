@@ -16,6 +16,7 @@ FILE *log_file;
 cJSON *cjson;
 char *calendar_filename;
 char *text_editor = 0;
+char *command = 0;
 char status_line[256];
 int modified = 0;
 int running = 1;
@@ -132,8 +133,19 @@ void save() {
 }
 
 /*
+ * Run the command specified by the user
+ */
+void print() {
+  if (!command) {
+    system("./print.sh");
+  } else {
+    system(command);
+  }
+}
+
+/*
  * Print text, respecting newlines, and coloring the text based on the
- * 1-character signifier at the beginning of the line.
+ * 1-character signifier at the beginning of the line
  */
 void print_multiline(char *str, int rootx, int rooty, int width) {
 
