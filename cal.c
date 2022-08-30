@@ -224,33 +224,43 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   /*
    * Print the top pane, with the data specific to the day
    */
-  {
-    strftime(buf, 256, "%Y-%m-%d", selected);
-    cJSON *root = find(cjson, buf);
-    if (root) {
-      cJSON *day_data = find(root, "data");
-      if (day_data) {
-        print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
-      }
-    } else {
-      move(rooty + 2, rootx);
-      printw("No entry.");
+  strftime(buf, 256, "%Y-%m-%d", selected);
+  cJSON *day_root = find(cjson, buf);
+  if (day_root) {
+    cJSON *day_data = find(day_root, "data");
+    if (day_data) {
+      print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
     }
+  } else {
+    move(rooty + 2, rootx);
+    printw("No entry.");
   }
 
   /*
    * Print the bottom pane, with the recurring tasks
    */
-  {
-    cJSON *root = find(cjson, days_short[selected->tm_wday]);
-    if (root) {
-      cJSON *day_data = find(root, "data");
-      if (day_data) {
-        move(height / 2 + 0, rootx);
-        printw("Recurring");
-        move(height / 2 + 1, rootx);
-        hline('-', width);
-        print_multiline(day_data->valuestring, rootx, height / 2 + 2, width - rootx);
+  cJSON *wday_root = find(cjson, days_short[selected->tm_wday]);
+  if (wday_root) {
+    cJSON *mask = find(day_root, "mask");
+    cJSON *day_data = find(wday_root, "data");
+    if (day_data) {
+      move(height / 2 + 0, rootx);
+      printw("Recurring");
+      move(height / 2 + 1, rootx);
+      hline('-', width);
+      int lines = print_multiline(day_data->valuestring, rootx + 2, height / 2 + 2, width - rootx - 2);
+
+      int val = 0;
+      if (mask && cJSON_IsNumber(mask)) {
+        val = mask->valueint;
+      }
+      for (int i = 1; i < lines+1; i++) {
+        move(height / 2 + 1 + i, rootx);
+        if (val >> i & 1) {
+          printw("+");
+        } else {
+          printw("o");
+        }
       }
     }
   }
