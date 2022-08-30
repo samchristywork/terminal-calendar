@@ -252,6 +252,20 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   }
 }
 
+int has_incomplete_tasks(char *str) {
+  if (str[0] == 'o') {
+    return 1;
+  }
+
+  for (int i = 1; i < strlen(str); i++) {
+    if (str[i - 1] == '\n' && str[i] == 'o') {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 /*
  * Print the left-hand pane
  */
@@ -268,6 +282,12 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   getmaxyx(w, height, width);
   height = height + width - width;
 
+  struct tm *tm = localtime(&startup_time);
+  int current_year = tm->tm_year;
+  int current_mon = tm->tm_mon;
+  int current_mday = tm->tm_mday;
+  flog("%d\n", current_mday);
+
   time_t initial_time = startup_time - (calendar_scroll * 7) * ONEDAY;
 
   clear();
@@ -276,7 +296,6 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   move(rooty + 1, rootx + 4);
   hline('-', 21);
 
-  struct tm *tm = localtime(&initial_time);
   move(rooty + 1, rootx);
   printw("'%d", tm->tm_year - 100);
   int off = tm->tm_wday;
@@ -297,6 +316,14 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
     cJSON *root = find(cjson, buf);
     if (root) {
       attron(A_BOLD);
+      cJSON *day_data = find(root, "data");
+      if (day_data) {
+        if (has_incomplete_tasks(day_data->valuestring) &&
+            current_mday + current_mon * 100 + current_year * 10000 >
+                tm->tm_mday + tm->tm_mon * 100 + tm->tm_year * 10000) {
+          color_set(6, NULL);
+        }
+      }
     }
 
     if (strlen(search_string) > 0 && root) {
@@ -310,12 +337,13 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
     }
 
     if (i == date_offset + calendar_scroll * 7) {
-      color_set(1, NULL);
+      attron(A_REVERSE);
     }
 
     printw("%d", tm->tm_mday);
     color_set(0, NULL);
     attroff(A_BOLD);
+    attroff(A_REVERSE);
 
     if (tm->tm_mday == 1) {
       move(line, rootx);
