@@ -603,6 +603,24 @@ int main(int argc, char *argv[]) {
 
     set_statusline(" ");
 
+    if (c >= '1' && c <= '9') {
+      int num = c - '0';
+      cJSON *root = find(cjson, tag);
+      if (root) {
+        cJSON *mask = find(root, "mask");
+        if (!mask) {
+          cJSON *number = cJSON_CreateNumber(0);
+          cJSON_AddItemToObject(root, "mask", number);
+          mask = find(root, "mask");
+        }
+        int value = mask->valueint;
+        int maskdiff = 1 << num;
+        value ^= maskdiff;
+        cJSON_SetNumberHelper(mask, value);
+      }
+      modified = 1;
+    }
+
     switch (c) {
 
     case ('0'):
