@@ -3,11 +3,9 @@
 #include <getopt.h>
 #include <regex.h>
 #include <signal.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "cal.h"
 #include "version.h"
@@ -203,7 +201,7 @@ int print_multiline(char *str, int rootx, int rooty, int width) {
 }
 
 /*
- * Print the right-hand pane, with the data for that day
+ * Print the right pane, with the data for that day
  */
 void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
 
@@ -281,7 +279,7 @@ int has_incomplete_tasks(char *str) {
 }
 
 /*
- * Print the left-hand pane
+ * Print the left pane
  */
 void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
                     int date_offset) {
@@ -300,7 +298,6 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   int current_year = tm->tm_year;
   int current_mon = tm->tm_mon;
   int current_mday = tm->tm_mday;
-  flog("%d\n", current_mday);
 
   time_t initial_time = startup_time - (calendar_scroll * 7) * ONEDAY;
 

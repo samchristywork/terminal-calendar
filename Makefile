@@ -3,7 +3,7 @@ include config.mk
 CC := gcc
 
 LIBS := -lncurses -lcjson
-CFLAGS := -g -Wall -Wpedantic -Werror
+CFLAGS := -g -Wall -Wpedantic
 
 all: build/terminal_calendar
 
