@@ -147,7 +147,7 @@ void print() {
  * Print text, respecting newlines, and coloring the text based on the
  * 1-character signifier at the beginning of the line
  */
-void print_multiline(char *str, int rootx, int rooty, int width) {
+int print_multiline(char *str, int rootx, int rooty, int width) {
 
   char *data = malloc(strlen(str) + 1);
   strcpy(data, str);
@@ -155,8 +155,10 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
   int line = 0;
 
   if (!ptr[0]) {
-    return;
+    return 0;
   }
+
+  int lines=0;
 
   for (int i = 0;; i++) {
     if (ptr[i] == '\n' || ptr[i] == 0) {
@@ -182,6 +184,7 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
         ptr[width] = 0;
       }
       printw("%s", ptr);
+      lines++;
       color_set(0, NULL);
       attroff(A_BOLD);
 
@@ -196,6 +199,7 @@ void print_multiline(char *str, int rootx, int rooty, int width) {
   }
 
   free(data);
+  return lines;
 }
 
 /*
