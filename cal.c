@@ -156,7 +156,7 @@ int print_multiline(char *str, int rootx, int rooty, int width) {
     return 0;
   }
 
-  int lines=0;
+  int lines = 0;
 
   for (int i = 0;; i++) {
     if (ptr[i] == '\n' || ptr[i] == 0) {
@@ -252,7 +252,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
       if (mask && cJSON_IsNumber(mask)) {
         val = mask->valueint;
       }
-      for (int i = 1; i < lines+1; i++) {
+      for (int i = 1; i < lines + 1; i++) {
         move(height / 2 + 1 + i, rootx);
         if (val >> i & 1) {
           printw("+");
