@@ -16,6 +16,7 @@ char *calendar_filename;
 char *text_editor = 0;
 char *home = 0;
 char *command = 0;
+char *log_filename = 0;
 char status_line[256];
 int modified = 0;
 int running = 1;
@@ -446,6 +447,7 @@ void usage(char *argv[]) {
           " -e,--editor    The command representing the text editor to use (default vim).\n"
           " -f,--file      Calendar file to use. Default \"calendar.json\".\n"
           " -h,--help      Print this usage message.\n"
+          " -l,--log-file  The name of the log file to be used.\n"
           " -n,--no-clear  Do not clear the screen on shutdown.\n"
           " -v,--verbose   Display additional logging information.\n"
           "",
@@ -472,6 +474,7 @@ int main(int argc, char *argv[]) {
       {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
       {"help", no_argument, 0, 'h'},
+      {"log-file", required_argument, 0, 'l'},
       {"no-clear", no_argument, 0, 'n'},
       {"verbose", no_argument, 0, 'v'},
       {0, 0, 0, 0},
@@ -489,6 +492,9 @@ int main(int argc, char *argv[]) {
       strcpy(calendar_filename, optarg);
     } else if (opt == 'h') {
       usage(argv);
+    } else if (opt == 'l') {
+      log_filename = malloc(strlen(optarg) + 1);
+      strcpy(log_filename, optarg);
     } else if (opt == 'n') {
       no_clear = 1;
     } else if (opt == 'v') {
@@ -516,7 +522,11 @@ int main(int argc, char *argv[]) {
     strcpy(text_editor, "vim");
   }
 
-  log_file = fopen("log", "wb");
+  if (log_filename) {
+    log_file = fopen(log_filename, "wb");
+  } else {
+    log_file = fopen("/dev/stderr", "wb");
+  }
 
   /*
    * Use the default filename if none is selected
