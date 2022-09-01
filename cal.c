@@ -214,7 +214,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   time_t selected_day = startup_time + date_offset * ONEDAY;
   struct tm *selected = localtime(&selected_day);
   char buf[256];
-  strftime(buf, 256, "%a %d %b %Y (%Y-%m-%d)", selected);
+  strftime(buf, 256, "%a %d %b %Y (%Y-%m-%d) Week %U", selected);
 
   move(rooty, rootx);
   printw("%s", buf);
