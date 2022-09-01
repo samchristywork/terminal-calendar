@@ -148,7 +148,7 @@ void print() {
  * Print text, respecting newlines, and coloring the text based on the
  * 1-character signifier at the beginning of the line
  */
-int print_multiline(char *str, int rootx, int rooty, int width) {
+int print_multiline(char *str, int rootx, int rooty, int width, int height) {
 
   char *data = malloc(strlen(str) + 1);
   strcpy(data, str);
@@ -164,7 +164,6 @@ int print_multiline(char *str, int rootx, int rooty, int width) {
   for (int i = 0;; i++) {
     if (ptr[i] == '\n' || ptr[i] == 0) {
       ptr[i] = 0;
-      move(rooty + line, rootx);
       if (ptr[0] == '+') {
         color_set(2, NULL);
         attron(A_BOLD);
@@ -184,7 +183,10 @@ int print_multiline(char *str, int rootx, int rooty, int width) {
       if (strlen(ptr) > width) {
         ptr[width] = 0;
       }
-      printw("%s", ptr);
+      if (line < height || height == 0) {
+        move(rooty + line, rootx);
+        printw("%s", ptr);
+      }
       lines++;
       color_set(0, NULL);
       attroff(A_BOLD);
@@ -230,7 +232,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   if (day_root) {
     cJSON *day_data = find(day_root, "data");
     if (day_data) {
-      print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx);
+      print_multiline(day_data->valuestring, rootx, rooty + 2, width - rootx, height / 2 - rooty - 3);
     }
   } else {
     move(rooty + 2, rootx);
@@ -245,11 +247,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
     cJSON *mask = find(day_root, "mask");
     cJSON *day_data = find(wday_root, "data");
     if (day_data) {
-      move(height / 2 + 0, rootx);
-      printw("Recurring");
-      move(height / 2 + 1, rootx);
-      hline('-', width);
-      int lines = print_multiline(day_data->valuestring, rootx + 2, height / 2 + 2, width - rootx - 2);
+      int lines = print_multiline(day_data->valuestring, rootx + 2, height / 2 + 2, width - rootx - 2, 0);
 
       int val = 0;
       if (mask && cJSON_IsNumber(mask)) {
@@ -438,7 +436,7 @@ void draw_help() {
               "\n"
               "Press any key to continue...\n";
 
-  print_multiline(str, 0, 0, 80);
+  print_multiline(str, 0, 0, 80, 0);
 }
 
 void usage(char *argv[]) {
