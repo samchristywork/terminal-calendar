@@ -14,6 +14,7 @@ FILE *log_file;
 cJSON *cjson;
 char *calendar_filename;
 char *text_editor = 0;
+char *home = 0;
 char *command = 0;
 char status_line[256];
 int modified = 0;
@@ -458,13 +459,14 @@ int main(int argc, char *argv[]) {
   calendar_filename = NULL;
 
   text_editor = getenv("EDITOR");
+  home = getenv("HOME");
 
   /*
    * Handle command-line arguments
    */
   int opt;
   int option_index = 0;
-  char *optstring = "c:e:f:hnv";
+  char *optstring = "c:e:f:hl:nv";
   static struct option long_options[] = {
       {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
@@ -520,9 +522,9 @@ int main(int argc, char *argv[]) {
    * Use the default filename if none is selected
    */
   if (!calendar_filename) {
-    char *f = "data.json";
-    calendar_filename = malloc(strlen(f) + 1);
-    strcpy(calendar_filename, f);
+    char *f = ".terminal_calendar.json";
+    calendar_filename = malloc(strlen(f) + 1 + strlen(home) + 1);
+    sprintf(calendar_filename, "%s/%s", home, f);
   }
 
   /*
