@@ -455,6 +455,7 @@ void usage(char *argv[]) {
           " -h,--help      Print this usage message.\n"
           " -l,--log-file  The name of the log file to be used.\n"
           " -n,--no-clear  Do not clear the screen on shutdown.\n"
+          " -o,--lock-file The name of the lock file to be used (default /tmp/termcal.lock).\n"
           " -v,--verbose   Display additional logging information.\n"
           "",
           argv[0]);
@@ -482,12 +483,13 @@ int main(int argc, char *argv[]) {
    */
   int opt;
   int option_index = 0;
-  char *optstring = "c:e:f:hl:nv";
+  char *optstring = "c:e:f:hl:no:v";
   static struct option long_options[] = {
       {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
       {"help", no_argument, 0, 'h'},
+      {"lock-file", required_argument, 0, 'o'},
       {"log-file", required_argument, 0, 'l'},
       {"no-clear", no_argument, 0, 'n'},
       {"verbose", no_argument, 0, 'v'},
@@ -511,6 +513,9 @@ int main(int argc, char *argv[]) {
       strcpy(log_filename, optarg);
     } else if (opt == 'n') {
       no_clear = 1;
+    } else if (opt == 'o') {
+      lock_location = malloc(strlen(optarg) + 1);
+      strcpy(lock_location, optarg);
     } else if (opt == 'v') {
       verbose = 1;
     } else if (opt == '?') {
