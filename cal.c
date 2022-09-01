@@ -23,6 +23,7 @@ int running = 1;
 int verbose = 0;
 time_t startup_time;
 char search_string[256] = {0};
+char *lock_location = "/tmp/termcal.lock";
 
 #define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
@@ -457,6 +458,14 @@ void usage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
+  if (access(lock_location, F_OK) == 0) {
+    printf("Found a lock file. Another calendar application may be running.\n");
+    exit(EXIT_FAILURE);
+  } else {
+    FILE *tclock = fopen(lock_location, "wb");
+    fclose(tclock);
+  }
+
   int no_clear = 0;
   calendar_filename = NULL;
 
@@ -779,6 +788,7 @@ int main(int argc, char *argv[]) {
   cJSON_Delete(cjson);
   fclose(log_file);
   free(calendar_filename);
+  unlink(lock_location);
 
   if (!no_clear) {
     printf("\33[H\33[2J");
