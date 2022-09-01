@@ -464,14 +464,6 @@ void usage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
-  if (access(lock_location, F_OK) == 0) {
-    printf("Found a lock file. Another calendar application may be running.\n");
-    exit(EXIT_FAILURE);
-  } else {
-    FILE *tclock = fopen(lock_location, "wb");
-    fclose(tclock);
-  }
-
   int no_clear = 0;
   calendar_filename = NULL;
 
@@ -531,6 +523,14 @@ int main(int argc, char *argv[]) {
       fprintf(stdout, "Got additional argument: %s\n", argv[i]);
       i++;
     }
+  }
+
+  if (access(lock_location, F_OK) == 0) {
+    printf("Found a lock file (%s). Another instance of this program may be running.\n", lock_location);
+    exit(EXIT_FAILURE);
+  } else {
+    FILE *tclock = fopen(lock_location, "wb");
+    fclose(tclock);
   }
 
   /*
