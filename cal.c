@@ -222,7 +222,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   int height;
   getmaxyx(w, height, width);
   move(rooty + 1, rootx);
-  hline('-', width - rootx);
+  hline(ACS_HLINE, width - rootx);
 
   /*
    * Print the top pane, with the data specific to the day
@@ -242,6 +242,11 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   /*
    * Print the bottom pane, with the recurring tasks
    */
+  move(height / 2 + 0, rootx);
+  printw("Recurring Weekly");
+  move(height / 2 + 1, rootx);
+  hline(ACS_HLINE, width);
+
   cJSON *wday_root = find(cjson, days_short[selected->tm_wday]);
   if (wday_root) {
     cJSON *mask = find(day_root, "mask");
@@ -306,7 +311,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   move(rooty, rootx + 4);
   printw("Su Mo Tu We Th Fr Sa");
   move(rooty + 1, rootx + 4);
-  hline('-', 21);
+  hline(ACS_HLINE, 21);
 
   move(rooty + 1, rootx);
   printw("'%d", tm->tm_year - 100);
@@ -364,7 +369,8 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
   }
 
   move(rooty, rootx + 25);
-  vline('|', height - 1);
+  vline(ACS_VLINE, height - 1);
+  mvaddch(rooty + 1, rootx + 25, ACS_RTEE);
 }
 
 /*
