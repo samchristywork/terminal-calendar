@@ -23,7 +23,9 @@ This is a comprehensive list of the default key bindings for this program:
 | h, j, k, l       | Move the cursor left, down, up, or right.         |
 | i, Space, Return | Edit the day under the cursor.                    |
 | s                | Save the data to the `calendar.json` file.        |
+| 1-9              | Toggle the indicators next to recurring tasks.    |
 | q                | Quit.                                             |
+| p                | 'Print' the calendar using the print script.      |
 | 0                | Move the cursor to the current day.               |
 | d                | Delete the data for the day under the cursor.     |
 | r                | Edit the recurring task for that day of the week. |
