@@ -207,6 +207,50 @@ int print_multiline(char *str, int rootx, int rooty, int width, int height) {
   return lines;
 }
 
+void count_from_string(char *str, int *green, int *yellow, int *red, int *blue) {
+  if (str[0] == '+' && str[1] == ' ') {
+    (*green)++;
+  }
+  if (str[0] == 'o' && str[1] == ' ') {
+    (*yellow)++;
+  }
+  if (str[0] == '-' && str[1] == ' ') {
+    (*red)++;
+  }
+  if (str[0] == 'x' && str[1] == ' ') {
+    (*blue)++;
+  }
+  for (int i = 2; i < strlen(str); i++) {
+    if (str[i - 2] == '\n' && str[i - 1] == '+' && str[i] == ' ') {
+      (*green)++;
+    }
+    if (str[i - 2] == '\n' && str[i - 1] == 'o' && str[i] == ' ') {
+      (*yellow)++;
+    }
+    if (str[i - 2] == '\n' && str[i - 1] == '-' && str[i] == ' ') {
+      (*red)++;
+    }
+    if (str[i - 2] == '\n' && str[i - 1] == 'x' && str[i] == ' ') {
+      (*blue)++;
+    }
+  }
+}
+
+void count_status(int *green, int *yellow, int *red, int *blue) {
+  cJSON *node = cjson->child;
+
+  while (1) {
+    if (!node) {
+      break;
+    }
+    cJSON *data = find(node, "data");
+    if (data) {
+      count_from_string(data->valuestring, green, yellow, red, blue);
+    }
+    node = node->next;
+  }
+}
+
 /*
  * Print the right pane, with the data for that day
  */
