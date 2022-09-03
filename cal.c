@@ -1,6 +1,7 @@
 #include <cjson/cJSON.h>
 #include <curses.h>
 #include <getopt.h>
+#include <math.h>
 #include <regex.h>
 #include <signal.h>
 #include <stdlib.h>

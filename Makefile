@@ -2,7 +2,7 @@ include config.mk
 
 CC := gcc
 
-LIBS := -lncurses -lcjson
+LIBS := -lncurses -lcjson -lm
 CFLAGS := -g -Wall -Wpedantic
 
 all: build/terminal_calendar
