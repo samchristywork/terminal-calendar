@@ -26,6 +26,7 @@ int verbose = 0;
 time_t startup_time;
 char search_string[256] = {0};
 char *lock_location = "/tmp/termcal.lock";
+int reg_flags = 0;
 
 #define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
@@ -553,6 +554,42 @@ void usage(char *argv[]) {
   exit(EXIT_FAILURE);
 }
 
+void search(WINDOW *w, int calendar_scroll, int date_offset, int flags, char symbol) {
+  reg_flags = flags;
+  int width;
+  int height;
+  getmaxyx(w, height, width);
+  width = width;
+  height = height;
+  move(height - 1, 0);
+  printw("%c", symbol);
+  search_string[0] = 0;
+  while (1) {
+    int i = strlen(search_string);
+    search_string[i + 1] = 0;
+
+    char c = getch();
+    if (c == '\n') {
+      break;
+    }
+    if (c == 7) { // Backspace
+      if (i == 0) {
+        break;
+      }
+      search_string[i - 1] = 0;
+    } else {
+      search_string[i] = c;
+    }
+
+    redraw();
+    move(height - 1, 0);
+    printw("%c", symbol);
+    move(height - 1, 1);
+    printw(search_string);
+  }
+  refresh();
+}
+
 int main(int argc, char *argv[]) {
 
   int no_clear = 0;
@@ -804,37 +841,13 @@ int main(int argc, char *argv[]) {
       }
       break;
 
-    case ('/'): {
-      int width;
-      int height;
-      getmaxyx(w, height, width);
-      width = width;
-      height = height;
-      move(height - 1, 0);
-      printw("/");
-      search_string[0] = 0;
-      while (1) {
-        int i = strlen(search_string);
-        search_string[i + 1] = 0;
+    case ('/'):
+      search(w, calendar_scroll, date_offset, 0, '/');
+      break;
 
-        char c = getch();
-        if (c == '\n') {
-          break;
-        }
-        if (c == 7) { // Backspace
-          search_string[i - 1] = 0;
-        } else {
-          search_string[i] = c;
-        }
-
-        redraw();
-        move(height - 1, 0);
-        printw("/");
-        move(height - 1, 1);
-        printw(search_string);
-      }
-      refresh();
-    } break;
+    case (92): // Backslash
+      search(w, calendar_scroll, date_offset, REG_ICASE, 92);
+      break;
 
     case ('?'):
       clear();
