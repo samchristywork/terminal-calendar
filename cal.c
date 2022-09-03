@@ -821,7 +821,11 @@ int main(int argc, char *argv[]) {
         if (c == '\n') {
           break;
         }
-        search_string[i] = c;
+        if (c == 7) { // Backspace
+          search_string[i - 1] = 0;
+        } else {
+          search_string[i] = c;
+        }
 
         redraw();
         move(height - 1, 0);
