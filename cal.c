@@ -382,7 +382,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
                     int date_offset) {
 
   regex_t preg;
-  if (regcomp(&preg, search_string, 0) != 0) {
+  if (regcomp(&preg, search_string, reg_flags) != 0) {
     exit(EXIT_FAILURE);
   }
 
