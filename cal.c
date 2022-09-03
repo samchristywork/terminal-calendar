@@ -864,6 +864,7 @@ int main(int argc, char *argv[]) {
       break;
 
     default:
+      flog("Uncaught keypress: %d\n", c);
       break;
     }
 
