@@ -314,6 +314,50 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
       }
     }
   }
+
+  /*
+   * Print the item counts in the top right corner
+   */
+  int green = 0;
+  int yellow = 0;
+  int red = 0;
+  int blue = 0;
+
+  count_status(&green, &yellow, &red, &blue);
+
+  int len = 0;
+  if (green) {
+    len += log10(green);
+  }
+  if (yellow) {
+    len += log10(yellow);
+  }
+  if (red) {
+    len += log10(red);
+  }
+  if (blue) {
+    len += log10(blue);
+  }
+  len += 7;
+
+  attron(A_BOLD);
+  move(rooty, width - len);
+  color_set(2, NULL);
+  printw("%d", green);
+  color_set(0, NULL);
+  printw("/");
+  color_set(3, NULL);
+  printw("%d", yellow);
+  color_set(0, NULL);
+  printw("/");
+  color_set(4, NULL);
+  printw("%d", red);
+  color_set(0, NULL);
+  printw("/");
+  color_set(5, NULL);
+  printw("%d", blue);
+  color_set(0, NULL);
+  attroff(A_BOLD);
 }
 
 int has_incomplete_tasks(char *str) {
