@@ -810,6 +810,8 @@ int main(int argc, char *argv[]) {
       getmaxyx(w, height, width);
       width = width;
       height = height;
+      move(height - 1, 0);
+      printw("/");
       search_string[0] = 0;
       while (1) {
         int i = strlen(search_string);
@@ -823,6 +825,8 @@ int main(int argc, char *argv[]) {
 
         redraw();
         move(height - 1, 0);
+        printw("/");
+        move(height - 1, 1);
         printw(search_string);
       }
       refresh();
