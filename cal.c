@@ -14,6 +14,8 @@
 
 FILE *log_file;
 cJSON *cjson;
+cJSON *weekdays;
+cJSON *dates;
 char *calendar_filename;
 char *text_editor = 0;
 char *home = 0;
@@ -238,7 +240,7 @@ void count_from_string(char *str, int *green, int *yellow, int *red, int *blue) 
 }
 
 void count_status(int *green, int *yellow, int *red, int *blue) {
-  cJSON *node = cjson->child;
+  cJSON *node = dates->child;
 
   while (1) {
     if (!node) {
@@ -275,7 +277,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
    * Print the top pane, with the data specific to the day
    */
   strftime(buf, 256, "%Y-%m-%d", selected);
-  cJSON *day_root = find(cjson, buf);
+  cJSON *day_root = find(dates, buf);
   if (day_root) {
     cJSON *day_data = find(day_root, "data");
     if (day_data) {
@@ -294,7 +296,7 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   move(height / 2 + 1, rootx);
   hline(ACS_HLINE, width);
 
-  cJSON *wday_root = find(cjson, days_short[selected->tm_wday]);
+  cJSON *wday_root = find(weekdays, days_short[selected->tm_wday]);
   if (wday_root) {
     cJSON *mask = find(day_root, "mask");
     cJSON *day_data = find(wday_root, "data");
@@ -421,7 +423,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
     char buf[256];
     sprintf(buf, "%d-%2.2d-%2.2d", 1900 + tm->tm_year, tm->tm_mon + 1,
             tm->tm_mday);
-    cJSON *root = find(cjson, buf);
+    cJSON *root = find(dates, buf);
     if (root) {
       attron(A_BOLD);
       cJSON *day_data = find(root, "data");
@@ -472,10 +474,10 @@ void edit_date(char *tag) {
     fprintf(log_file, "Editing tag \"%s\".\n", tag);
   }
 
-  cJSON *root = find(cjson, tag);
+  cJSON *root = find(dates, tag);
   if (!root) {
     root = cJSON_CreateObject();
-    cJSON_AddItemToObject(cjson, tag, root);
+    cJSON_AddItemToObject(dates, tag, root);
   }
 
   if (root) {
@@ -696,6 +698,14 @@ int main(int argc, char *argv[]) {
     fclose(f);
   }
 
+  dates = find(cjson, "days");
+  weekdays = find(cjson, "weekdays");
+
+  if (!dates || !weekdays) {
+    fprintf(log_file, "File format error.\n");
+    exit(EXIT_FAILURE);
+  }
+
   /*
    * Initialize ncurses
    */
@@ -761,7 +771,7 @@ int main(int argc, char *argv[]) {
 
     if (c >= '1' && c <= '9') {
       int num = c - '0';
-      cJSON *root = find(cjson, tag);
+      cJSON *root = find(dates, tag);
       if (root) {
         cJSON *mask = find(root, "mask");
         if (!mask) {
@@ -787,7 +797,7 @@ int main(int argc, char *argv[]) {
       if (verbose) {
         fprintf(log_file, "Deleting calendar entry.\n");
       }
-      cJSON_DeleteItemFromObject(cjson, tag);
+      cJSON_DeleteItemFromObject(dates, tag);
       set_statusline("Deleted entry \"%s\".", tag);
       modified = 1;
       break;
