@@ -104,8 +104,9 @@ cJSON *readJSONFile(FILE *f) {
       exit(EXIT_FAILURE);
     }
   } else {
-    buffer = malloc(3);
-    strcpy(buffer, "{}");
+    char *template = "{\"weekdays\":{},\"days\":{}}";
+    buffer = malloc(strlen(template) + 1);
+    strcpy(buffer, template);
   }
 
   cJSON *handle = cJSON_Parse(buffer);
