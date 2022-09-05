@@ -12,6 +12,7 @@
 #include "cal.h"
 #include "version.h"
 
+int show_num_lines = 0;
 FILE *log_file;
 cJSON *cjson;
 cJSON *weekdays;
@@ -425,6 +426,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
     sprintf(buf, "%d-%2.2d-%2.2d", 1900 + tm->tm_year, tm->tm_mon + 1,
             tm->tm_mday);
     cJSON *root = find(dates, buf);
+    int num_tasks = 0;
     if (root) {
       attron(A_BOLD);
       cJSON *day_data = find(root, "data");
@@ -433,6 +435,11 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
             current_mday + current_mon * 100 + current_year * 10000 >
                 tm->tm_mday + tm->tm_mon * 100 + tm->tm_year * 10000) {
           color_set(6, NULL);
+        }
+        for (int i = 0; i < strlen(day_data->valuestring); i++) {
+          if (day_data->valuestring[i] == '\n') {
+            num_tasks++;
+          }
         }
       }
     }
@@ -451,7 +458,13 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
       attron(A_REVERSE);
     }
 
-    printw("%d", tm->tm_mday);
+    if (show_num_lines) {
+      if (num_tasks != 0) {
+        printw("%d", num_tasks);
+      }
+    } else {
+      printw("%d", tm->tm_mday);
+    }
     color_set(0, NULL);
     attroff(A_BOLD);
     attroff(A_REVERSE);
@@ -842,6 +855,10 @@ int main(int argc, char *argv[]) {
 
     case ('i'):
       edit_date(dates, tag);
+      break;
+
+    case ('e'):
+      show_num_lines = !show_num_lines;
       break;
 
     case ('q'):
