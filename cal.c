@@ -470,15 +470,15 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
 /*
  * Edit a tag in the cJSON structure with the chosen text editor
  */
-void edit_date(char *tag) {
+void edit_date(cJSON *node, char *tag) {
   if (verbose) {
     fprintf(log_file, "Editing tag \"%s\".\n", tag);
   }
 
-  cJSON *root = find(dates, tag);
+  cJSON *root = find(node, tag);
   if (!root) {
     root = cJSON_CreateObject();
-    cJSON_AddItemToObject(dates, tag, root);
+    cJSON_AddItemToObject(node, tag, root);
   }
 
   if (root) {
@@ -804,7 +804,7 @@ int main(int argc, char *argv[]) {
       break;
 
     case ('r'):
-      edit_date(days_short[selected->tm_wday]);
+      edit_date(weekdays, days_short[selected->tm_wday]);
       break;
 
     case ('h'):
@@ -833,15 +833,15 @@ int main(int argc, char *argv[]) {
       break;
 
     case ('\n'):
-      edit_date(tag);
+      edit_date(dates, tag);
       break;
 
     case (' '):
-      edit_date(tag);
+      edit_date(dates, tag);
       break;
 
     case ('i'):
-      edit_date(tag);
+      edit_date(dates, tag);
       break;
 
     case ('q'):
