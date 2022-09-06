@@ -40,10 +40,13 @@ The terminal calendar can be invoked as described in the usage statement:
 
 ```
 Usage: terminal_calendar [options]
+ -c,--command   The command to be run when "printing" (default `./print.sh`).
  -e,--editor    The command representing the text editor to use (default vim).
  -f,--file      Calendar file to use. Default "calendar.json".
  -h,--help      Print this usage message.
+ -l,--log-file  The name of the log file to be used.
  -n,--no-clear  Do not clear the screen on shutdown.
+ -o,--lock-file The name of the lock file to be used (default /tmp/termcal.lock).
  -v,--verbose   Display additional logging information.
 ```
 
