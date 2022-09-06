@@ -29,7 +29,9 @@ This is a comprehensive list of the default key bindings for this program:
 | 0                | Move the cursor to the current day.               |
 | d                | Delete the data for the day under the cursor.     |
 | r                | Edit the recurring task for that day of the week. |
+| e                | Cycles views in the calendar pane.                |
 | /                | Search for a string in day data using regex.      |
+| \                | Same as '/', but is case insensitive.             |
 | Cursor keys      | Scroll the calendar.                              |
 
 ## Usage
