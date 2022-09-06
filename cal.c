@@ -12,7 +12,7 @@
 #include "cal.h"
 #include "version.h"
 
-int show_num_lines = 0;
+int calendar_view_mode = 0;
 FILE *log_file;
 cJSON *cjson;
 cJSON *weekdays;
@@ -458,12 +458,14 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
       attron(A_REVERSE);
     }
 
-    if (show_num_lines) {
+    if (calendar_view_mode == 0) {
+      printw("%d", tm->tm_mday);
+    } else if (calendar_view_mode == 1) {
       if (num_tasks != 0) {
         printw("%d", num_tasks);
       }
     } else {
-      printw("%d", tm->tm_mday);
+      printw("%d", tm->tm_mon);
     }
     color_set(0, NULL);
     attroff(A_BOLD);
@@ -860,7 +862,10 @@ int main(int argc, char *argv[]) {
       break;
 
     case ('e'):
-      show_num_lines = !show_num_lines;
+      calendar_view_mode++;
+      if (calendar_view_mode > 2) {
+        calendar_view_mode = 0;
+      }
       break;
 
     case ('q'):
