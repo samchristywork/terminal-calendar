@@ -547,6 +547,7 @@ void draw_help() {
               "| d                | Delete the data for the day under the cursor.     |\n"
               "| r                | Edit the recurring task for that day of the week. |\n"
               "| /                | Search for a string in day data using regex.      |\n"
+              "| \\                | Same as '/', but is case insensitive.             |\n"
               "| Cursor keys      | Scroll the calendar.                              |\n"
               "\n"
               "Press any key to continue...\n";
