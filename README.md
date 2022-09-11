@@ -14,6 +14,30 @@ The left pane consists of a calendar that can be navigated using the h, j, k,
 and l keys. You can press "Enter" to edit the data associated with that day
 using a text editor.
 
+## Save File Format
+
+The save file is located at `~/.terminal_calendar.json` by default. It is a JSON
+file. A (very) small save file may look something like this:
+
+```json
+{
+  "weekdays":  {
+    "Sat":  {
+      "data":  "Test\nData\n"
+    }
+  },
+  "days":  {
+    "2022-09-10":  {
+      "data":  "o This is\n+ Test data\n",
+      "mask":  4
+    }
+  }
+}
+```
+
+The `mask` value is a bitmask of the user's "checking off" of the recurring
+events for that day. The rest of this format should be self-explanatory.
+
 ## Key Bindings
 
 This is a comprehensive list of the default key bindings for this program:
