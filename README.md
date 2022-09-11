@@ -38,6 +38,16 @@ file. A (very) small save file may look something like this:
 The `mask` value is a bitmask of the user's "checking off" of the recurring
 events for that day. The rest of this format should be self-explanatory.
 
+## Text Editor Configuration
+
+In order to edit calendar data, you need to have a text editor set up. By
+default, the program will use Vim, but if you have your `$EDITOR` variable set
+then that will be used instead, or you can specify an editor with the `-e` or
+`--editor` options.
+
+The program uses the `system` library function to call the program you specified
+with a single filename argument.
+
 ## Key Bindings
 
 This is a comprehensive list of the default key bindings for this program:
