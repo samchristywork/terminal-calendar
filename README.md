@@ -96,7 +96,7 @@ gcc
 libcjson-dev
 libncurses-dev
 make
-some editor (default nvim)
+some editor (default vim)
 ```
 
 ## License
