@@ -7,7 +7,7 @@ goals, and meetings. Here is a screenshot that illustrates what the program
 looks like:
 
 <p align="center">
-  <img alt="Screenshot" src="./sample.png">
+  <img alt="Screenshot" src="./sample_annotated.png">
 <p>
 
 The left pane consists of a calendar that can be navigated using the h, j, k,
