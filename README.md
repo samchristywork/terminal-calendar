@@ -65,6 +65,12 @@ sed '1s/^/let data=/' data.json > public/data.js && \
   user@example.com:~/calendar/my-calendar
 ```
 
+## Status Line
+
+The status line provides messages to the user, which range from confirmations
+for some operations like saving to warnings for dangerous operations. The status
+line is located in the bottom left of the screen.
+
 ## Searching
 
 You can search for terms using the '/' and '\' keys. The former matches strings
