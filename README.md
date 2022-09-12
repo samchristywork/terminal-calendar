@@ -65,6 +65,16 @@ sed '1s/^/let data=/' data.json > public/data.js && \
   user@example.com:~/calendar/my-calendar
 ```
 
+## Searching
+
+You can search for terms using the '/' and '\' keys. The former matches strings
+in the daily data, and the latter does the same but case insensitively. As you
+are typing the string to search for you will see your search term populated on
+the status-line in the bottom left of the screen. Days that match the string you
+are typing will be highlighted with a yellow background. Clear your search by
+searching for the empty string (i.e., press '/' then press 'Enter'. You can also
+exit the search mode by pressing 'Backspace' until the search string is cleared.
+
 ## Key Bindings
 
 This is a comprehensive list of the default key bindings for this program:
