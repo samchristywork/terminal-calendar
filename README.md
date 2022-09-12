@@ -48,6 +48,23 @@ then that will be used instead, or you can specify an editor with the `-e` or
 The program uses the `system` library function to call the program you specified
 with a single filename argument.
 
+## Print Command
+
+Pressing the "p" key will run the `print.sh` script or whatever command you
+specified with the `--command` option. This can be useful for a number of
+use-cases, but it is primarily intended to be used to publish calendar data to a
+website or server for online access and backups. I use something similar to the
+following command so that I can see my calendar on a webpage even when I'm away
+from my computer:
+
+```bash
+#!/bin/bash
+
+sed '1s/^/let data=/' data.json > public/data.js && \
+  scp public/data.js public/index.html public/script.js \
+  user@example.com:~/calendar/my-calendar
+```
+
 ## Key Bindings
 
 This is a comprehensive list of the default key bindings for this program:
