@@ -21,11 +21,19 @@ looks like:
 | 7  | Status line             | Messages will be shown here for some operations like saving the file.                                     |
 | 8  | Help                    | This text indicates to the user that they can get help for the application by typing '?'.                 |
 
-# Calendar Pane
+## Calendar Pane
 
 The left pane consists of a calendar that can be navigated using the h, j, k,
 and l keys. You can press "Enter" to edit the data associated with that day
-using a text editor.
+using a text editor. The currently selected day is marked in black text with a
+white background, and days with data associated with them are in bold.
+
+## File Modification Indicator
+
+When a change has been made to the data associated with your calendar, the `(*)`
+indicator will appear in the top left corner of the window. In this state, the
+data has been changed but has not yet been written to disk. You can write the
+data to disk using 's', or you can discard the changes with 'ctrl-c'.
 
 ## Save File Format
 
