@@ -10,6 +10,19 @@ looks like:
   <img alt="Screenshot" src="./sample_annotated.png">
 <p>
 
+| ID | Name                    | Description                                                                                               |
+|----|-------------------------|-----------------------------------------------------------------------------------------------------------|
+| 1  | File modified indicator | The symbol `(*)` indicates that data has been modified and needs to be saved to disk with the 's' key.    |
+| 2  | Calendar pane           | The left pane of the application shows the days of the year where each week is a line.                    |
+| 3  | Currently selected day  | This is what the cursor looks like.                                                                       |
+| 4  | Day pane                | This pane shows the data associated with the current day. Press "Enter" to edit this data.                |
+| 5  | Week pane               | This pane shows the data that recurs weekly. Press the number keys to interact, and "r" to edit the text. |
+| 6  | Completion breakdown    | This indicates how many tasks are marked as complete, in progress, failed, and deferred.                  |
+| 7  | Status line             | Messages will be shown here for some operations like saving the file.                                     |
+| 8  | Help                    | This text indicates to the user that they can get help for the application by typing '?'.                 |
+
+# Calendar Pane
+
 The left pane consists of a calendar that can be navigated using the h, j, k,
 and l keys. You can press "Enter" to edit the data associated with that day
 using a text editor.
