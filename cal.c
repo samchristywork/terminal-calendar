@@ -217,6 +217,11 @@ int print_multiline(char *str, int rootx, int rooty, int width, int height) {
   return lines;
 }
 
+/*
+ * This function takes a string, and counts the number of lines that are
+ * prepended with a '+', 'o', '-', or 'x'. The results are placed in the
+ * appropriate args
+ */
 void count_from_string(char *str, int *green, int *yellow, int *red, int *blue) {
   if (str[0] == '+' && str[1] == ' ') {
     (*green)++;
@@ -246,6 +251,10 @@ void count_from_string(char *str, int *green, int *yellow, int *red, int *blue) 
   }
 }
 
+/*
+ * This function sums up the counts returned from 'count_from_string' over all
+ * dates with data
+ */
 void count_status(int *green, int *yellow, int *red, int *blue) {
   cJSON *node = dates->child;
 
@@ -370,6 +379,10 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   attroff(A_BOLD);
 }
 
+/*
+ * This function tests whether the string contains lines that start with the
+ * character 'o'. This assists with user feedback.
+ */
 int has_incomplete_tasks(char *str) {
   if (str[0] == 'o') {
     return 1;
@@ -579,6 +592,10 @@ void usage(char *argv[]) {
   exit(EXIT_FAILURE);
 }
 
+/*
+ * This function handles the mechanics of the user entering a string to search
+ * for
+ */
 void search(WINDOW *w, int calendar_scroll, int date_offset, int flags, char symbol) {
   reg_flags = flags;
   int width;
