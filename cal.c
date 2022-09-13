@@ -12,24 +12,24 @@
 #include "cal.h"
 #include "version.h"
 
-int calendar_view_mode = 0;
 FILE *log_file;
 cJSON *cjson;
-cJSON *weekdays;
 cJSON *dates;
+cJSON *weekdays;
 char *calendar_filename;
-char *text_editor = 0;
-char *home = 0;
 char *command = 0;
+char *home = 0;
+char *lock_location = "/tmp/termcal.lock";
 char *log_filename = 0;
+char *text_editor = 0;
+char search_string[256] = {0};
 char status_line[256];
+int calendar_view_mode = 0;
 int modified = 0;
+int reg_flags = 0;
 int running = 1;
 int verbose = 0;
 time_t startup_time;
-char search_string[256] = {0};
-char *lock_location = "/tmp/termcal.lock";
-int reg_flags = 0;
 
 #define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
