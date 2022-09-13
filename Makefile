@@ -7,7 +7,7 @@ CFLAGS := -g -Wall -Wpedantic
 
 all: build/terminal_calendar
 
-build/terminal_calendar: cal.c
+build/terminal_calendar: cal.c version.h
 	mkdir -p build/
 	${CC} ${CFLAGS} $^ -o $@ ${LIBS}
 
