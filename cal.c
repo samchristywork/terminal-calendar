@@ -128,6 +128,11 @@ cJSON *readJSONFile(FILE *f) {
  * Save data to disk
  */
 void save() {
+  cJSON *version = find(cjson, "version");
+  if (!version) {
+    version = cJSON_CreateString(TERMINAL_CALENDAR_VERSION);
+    cJSON_AddItemToObject(cjson, "version", version);
+  }
   FILE *f = fopen(calendar_filename, "wb");
   char *str = cJSON_Print(cjson);
   fprintf(f, str);
