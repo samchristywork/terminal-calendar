@@ -86,6 +86,22 @@ sed '1s/^/let data=/' data.json > public/data.js && \
   user@example.com:~/calendar/my-calendar
 ```
 
+## Color Coding
+
+This program has a very primitive form of syntax highlighting to enhance
+productivity. The current scheme is to highlight text according to this table:
+
+| First Character | Color  | Meaning     |
+|-----------------|--------|-------------|
+| +               | Green  | Done        |
+| o               | Yellow | In progress |
+| -               | Red    | Failed      |
+| x               | Blue   | Deferred    |
+
+There is a Vim syntax file that is included in this repository that I use to
+keep the color coding in my editor. To use it, move it to `~/.vim/syntax/` or
+`~/.config/nvim/syntax/` if you have `neovim` instead.
+
 ## Status Line
 
 The status line provides messages to the user, which range from confirmations
