@@ -653,6 +653,24 @@ void search(WINDOW *w, int calendar_scroll, int date_offset, int flags, char sym
   refresh();
 }
 
+void die(WINDOW *w, int no_clear, int status, char *reason) {
+  delwin(w);
+  endwin();
+  refresh();
+  cJSON_Delete(cjson);
+  fclose(log_file);
+  free(calendar_filename);
+  unlink(lock_location);
+
+  if (!no_clear) {
+    printf("\33[H\33[2J");
+  }
+
+  printf("%s\n", reason);
+
+  exit(status);
+}
+
 int main(int argc, char *argv[]) {
 
   int no_clear = 0;
@@ -984,15 +1002,5 @@ int main(int argc, char *argv[]) {
   /*
    * Clean up
    */
-  delwin(w);
-  endwin();
-  refresh();
-  cJSON_Delete(cjson);
-  fclose(log_file);
-  free(calendar_filename);
-  unlink(lock_location);
-
-  if (!no_clear) {
-    printf("\33[H\33[2J");
-  }
+  die(w, no_clear, EXIT_SUCCESS);
 }
