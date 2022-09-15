@@ -671,6 +671,28 @@ void die(WINDOW *w, int no_clear, int status, char *reason) {
   exit(status);
 }
 
+void parse_version_string(char *str, int *major, int *minor, int *build) {
+  *major = atoi(str);
+
+  while (str[0] != '.') {
+    str++;
+    if (str[0] == 0) {
+      die(NULL, 1, EXIT_FAILURE);
+    }
+  }
+  str++;
+  *minor = atoi(str);
+
+  while (str[0] != '.') {
+    str++;
+    if (str[0] == 0) {
+      die(NULL, 1, EXIT_FAILURE);
+    }
+  }
+  str++;
+  *build = atoi(str);
+}
+
 int main(int argc, char *argv[]) {
 
   int no_clear = 0;
