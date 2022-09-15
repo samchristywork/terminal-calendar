@@ -677,7 +677,7 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
   while (str[0] != '.') {
     str++;
     if (str[0] == 0) {
-      die(NULL, 1, EXIT_FAILURE);
+      die(NULL, 1, EXIT_FAILURE, "Version parse error.");
     }
   }
   str++;
@@ -686,7 +686,7 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
   while (str[0] != '.') {
     str++;
     if (str[0] == 0) {
-      die(NULL, 1, EXIT_FAILURE);
+      die(NULL, 1, EXIT_FAILURE, "Version parse error.");
     }
   }
   str++;
@@ -1024,5 +1024,5 @@ int main(int argc, char *argv[]) {
   /*
    * Clean up
    */
-  die(w, no_clear, EXIT_SUCCESS);
+  die(w, no_clear, EXIT_SUCCESS, ":^)");
 }
