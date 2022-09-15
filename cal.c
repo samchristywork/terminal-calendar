@@ -799,6 +799,31 @@ int main(int argc, char *argv[]) {
     fclose(f);
   }
 
+  cJSON *version = find(cjson, "version");
+  if (version) {
+    char *p = version->valuestring;
+
+    int m_major, m_minor, m_build;
+    int major, minor, build;
+
+    parse_version_string(MIN_SUPPORTED_VERSION, &m_major, &m_minor, &m_build);
+    parse_version_string(p, &major, &minor, &build);
+
+    if (major < m_major) {
+      die(NULL, 1, EXIT_FAILURE, "Version not supported.");
+    }
+    if (major == m_major) {
+      if (minor < m_minor) {
+        die(NULL, 1, EXIT_FAILURE, "Version not supported.");
+      }
+      if (minor == m_minor) {
+        if (build < m_build) {
+          die(NULL, 1, EXIT_FAILURE, "Version not supported.");
+        }
+      }
+    }
+  }
+
   dates = find(cjson, "days");
   weekdays = find(cjson, "weekdays");
 
