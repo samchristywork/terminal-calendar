@@ -398,6 +398,24 @@ int has_incomplete_tasks(char *str) {
 }
 
 /*
+ * This function tests whether the string contains lines that start with the
+ * character '!'. This assists with user feedback.
+ */
+int has_important_tasks(char *str) {
+  if (str[0] == '!') {
+    return 1;
+  }
+
+  for (int i = 1; i < strlen(str); i++) {
+    if (str[i - 1] == '\n' && str[i] == '!') {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+/*
  * Print the left pane
  */
 void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
@@ -458,6 +476,9 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
           if (day_data->valuestring[i] == '\n') {
             num_tasks++;
           }
+        }
+        if (has_important_tasks(day_data->valuestring)) {
+          color_set(7, NULL);
         }
       }
     }
@@ -774,6 +795,7 @@ int main(int argc, char *argv[]) {
   init_pair(4, COLOR_RED, COLOR_BLACK);
   init_pair(5, COLOR_BLUE, COLOR_BLACK);
   init_pair(6, COLOR_BLACK, COLOR_YELLOW);
+  init_pair(7, COLOR_BLACK, COLOR_RED);
 
   /*
    * Handle signals
