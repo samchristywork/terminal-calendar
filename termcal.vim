@@ -1,8 +1,9 @@
 " Vim syntax file
+
 " Language:     Terminal Calendar Files
 " Maintainer:   Sam Christy <samchristywork@gmail.com>
-" Last Change:  Sat, Aug 20, 2022
-" Version:      0.01
+" Last Change:  Wed, Sep 14, 2022
+" Version:      0.02
 
 if !exists("main_syntax")
   " quit when a syntax file was already loaded
@@ -41,7 +42,6 @@ nmap 9 :read !date "+\%Y/\%m/\%d (\%a)"<cr>
 hi TermCalAlternative ctermbg=blue
 hi TermCalDone        ctermfg=green
 hi TermCalFail        ctermfg=red
-hi TermCalGroup       ctermbg=blue cterm=underline
 hi TermCalUnused      ctermfg=blue
 hi TermCalWillDo      ctermfg=yellow
 hi TermCalImportant   ctermbg=yellow ctermfg=black
@@ -50,7 +50,6 @@ hi TermCalImportant   ctermbg=yellow ctermfg=black
 syn match TermCalAlternative /.\+\$/
 syn match TermCalDone        /^+.\+/
 syn match TermCalFail        /^-.\+/
-syn match TermCalGroup       /^=.\+/
 syn match TermCalUnused      /^x.\+/
 syn match TermCalWillDo      /^o.\+/
 syn match TermCalImportant   /^!.\+/
