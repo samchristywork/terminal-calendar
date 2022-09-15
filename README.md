@@ -118,6 +118,17 @@ are typing will be highlighted with a yellow background. Clear your search by
 searching for the empty string (i.e., press '/' then press 'Enter'. You can also
 exit the search mode by pressing 'Backspace' until the search string is cleared.
 
+## View Modes
+
+The user can toggle the way the calendar on the left pane is rendered with the
+'e' key. There are currently three view modes:
+
+| ID | Mode     | Description                                                                           |
+|----|----------|---------------------------------------------------------------------------------------|
+| 1  | Standard | This is the typical mode that arranges the days in week groups starting each Sunday.  |
+| 2  | Count    | This mode shows the event counts per day instead of the day of the month.             |
+| 3  | Month    | This mode shows the month index of the day where January is "0" and December is "11". |
+
 ## Key Bindings
 
 This is a comprehensive list of the default key bindings for this program:
