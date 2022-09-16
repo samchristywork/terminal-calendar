@@ -1,0 +1,13 @@
+{
+	"weekdays":	{
+		"Sat":	{
+			"data":	"Test\nData\n"
+		}
+	},
+	"days":	{
+		"2022-09-10":	{
+			"data":	"o This is\n+ Test data\n",
+			"mask":	4
+		}
+	}
+}
