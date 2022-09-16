@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -542,7 +543,8 @@ void edit_date(cJSON *node, char *tag) {
       cJSON_AddItemToObject(root, "data", day_data);
     }
 
-    char filename[] = "/tmp/cal.XXXXXX";
+    mkdir("/tmp/terminal-calendar/", 0777);
+    char filename[] = "/tmp/terminal-calendar/cal.XXXXXX";
     int tmpfd = mkstemp(filename);
     FILE *tmpfile = fdopen(tmpfd, "wb");
     if (day_data) {
