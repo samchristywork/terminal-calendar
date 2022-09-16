@@ -702,6 +702,14 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
   }
   str++;
   *build = atoi(str);
+
+  while (str[0] != '.') {
+    str++;
+    if (str[0] == 0) {
+      return;
+    }
+  }
+  die(NULL, 1, EXIT_FAILURE, "Version parse error.");
 }
 
 int main(int argc, char *argv[]) {
