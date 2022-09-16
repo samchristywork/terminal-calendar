@@ -671,6 +671,17 @@ void die(WINDOW *w, int no_clear, int status, char *reason) {
   exit(status);
 }
 
+/*
+ * Populate the "major", "minor", and "build" int pointers with the data in the string.
+ *
+ * Given:
+ *   str="1.2.3"
+ *
+ * Then:
+ *   major=1
+ *   minor=2
+ *   build=3
+ */
 void parse_version_string(char *str, int *major, int *minor, int *build) {
   *major = atoi(str);
 
