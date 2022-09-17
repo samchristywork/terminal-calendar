@@ -59,25 +59,6 @@ file. A (very) small save file may look something like this:
 The `mask` value is a bitmask of the user's "checking off" of the recurring
 events for that day. The rest of this format should be self-explanatory.
 
-## Text Editor Configuration
-
-In order to edit calendar data, you need to have a text editor set up. By
-default, the program will use Vim, but if you have your `$EDITOR` variable set
-then that will be used instead, or you can specify an editor with the `-e` or
-`--editor` options.
-
-The program uses the `system` library function to call the program you specified
-with a single filename argument.
-
-## Print Command
-
-Pressing the "p" key will run the `print.sh` script or whatever command you
-specified with the `--command` option. This can be useful for a number of
-use-cases, but it is primarily intended to be used to publish calendar data to a
-website or server for online access and backups. I use something similar to the
-following command so that I can see my calendar on a webpage even when I'm away
-from my computer:
-
 ```bash
 #!/bin/bash
 
@@ -148,6 +129,25 @@ This is a comprehensive list of the default key bindings for this program:
 | /                | Search for a string in day data using regex.      |
 | \                | Same as '/', but is case insensitive.             |
 | Cursor keys      | Scroll the calendar.                              |
+
+## Text Editor
+
+In order to edit calendar data, you need to have a text editor set up. By
+default, the program will use Vim, but if you have your `$EDITOR` variable set
+then that will be used instead, or you can specify an editor with the `-e` or
+`--editor` options.
+
+The program uses the `system` library function to call the program you specified
+with a single filename argument.
+
+## Print Command
+
+Pressing the "p" key will run the `print.sh` script or whatever command you
+specified with the `--command` option. This can be useful for a number of
+use-cases, but it is primarily intended to be used to publish calendar data to a
+website or server for online access and backups. I use something similar to the
+following command so that I can see my calendar on a webpage even when I'm away
+from my computer:
 
 ## Usage
 
