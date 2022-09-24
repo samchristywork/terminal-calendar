@@ -471,7 +471,7 @@ void print_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll,
         if (has_incomplete_tasks(day_data->valuestring) &&
             current_mday + current_mon * 100 + current_year * 10000 >
                 tm->tm_mday + tm->tm_mon * 100 + tm->tm_year * 10000) {
-          color_set(6, NULL);
+          color_set(7, NULL);
         }
         for (int i = 0; i < strlen(day_data->valuestring); i++) {
           if (day_data->valuestring[i] == '\n') {
