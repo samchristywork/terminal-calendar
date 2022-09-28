@@ -151,6 +151,51 @@ int cmpfunc(const void *a, const void *b) {
   return strcmp(aa, bb);
 }
 
+void remove_old_backups() {
+
+  DIR *dirp = opendir(backup_dir);
+  if (!dirp) {
+    perror("opendir");
+    die(NULL, 1, EXIT_FAILURE, "Directory could not be opened.");
+  }
+
+  char **dirs = malloc(sizeof(char *) * 256);
+
+  int count = 0;
+  while (count < 255) {
+
+    struct dirent *d = readdir(dirp);
+    if (d == NULL) {
+      break;
+    }
+    if (strcmp(d->d_name, ".") == 0) {
+      continue;
+    }
+    if (strcmp(d->d_name, "..") == 0) {
+      continue;
+    }
+    dirs[count] = malloc(strlen(d->d_name) + 1);
+    strcpy(dirs[count], d->d_name);
+    count++;
+  }
+
+  qsort(dirs, count, sizeof(char *), cmpfunc);
+
+  for (int i = 0; i < count; i++) {
+    flog("%s\n", dirs[i]);
+  }
+
+  int toremove = count - 10;
+  if (toremove > 0) {
+    for (int i = 0; i < toremove; i++) {
+      char filename[PATH_MAX];
+      sprintf(filename, "%s/%s", backup_dir, dirs[i]);
+      flog("Removing %s\n", filename);
+      unlink(filename);
+    }
+  }
+}
+
 /*
  * Save data to disk
  */
@@ -183,6 +228,8 @@ void save() {
   if (verbose) {
     fprintf(log_file, "Saving file.\n");
   }
+
+  remove_old_backups();
 }
 
 /*
