@@ -1,5 +1,6 @@
 #include <cjson/cJSON.h>
 #include <curses.h>
+#include <dirent.h>
 #include <getopt.h>
 #include <math.h>
 #include <regex.h>
@@ -18,6 +19,7 @@ cJSON *cjson;
 cJSON *dates;
 cJSON *weekdays;
 char *calendar_filename;
+char *backup_dir = 0;
 char *command = 0;
 char *home = 0;
 char *lock_location = "/tmp/termcal.lock";
@@ -134,10 +136,23 @@ void save() {
     version = cJSON_CreateString(TERMINAL_CALENDAR_VERSION);
     cJSON_AddItemToObject(cjson, "version", version);
   }
-  FILE *f = fopen(calendar_filename, "wb");
   char *str = cJSON_Print(cjson);
-  fprintf(f, str);
+
+  FILE *f = fopen(calendar_filename, "wb");
+  fprintf(f, "%s", str);
   fclose(f);
+
+  /*
+   * Backups
+   */
+  char backup_filename[PATH_MAX];
+  bzero(backup_filename, PATH_MAX);
+  sprintf(backup_filename, "%s/%lu", backup_dir, time(0));
+
+  f = fopen(backup_filename, "wb");
+  fprintf(f, "%s", str);
+  fclose(f);
+
   free(str);
   modified = 0;
   set_statusline("File saved.");
@@ -727,8 +742,9 @@ int main(int argc, char *argv[]) {
    */
   int opt;
   int option_index = 0;
-  char *optstring = "c:e:f:hl:no:v";
+  char *optstring = "b:c:e:f:hl:no:v";
   static struct option long_options[] = {
+      {"backup_dir", required_argument, 0, 'b'},
       {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
@@ -741,7 +757,10 @@ int main(int argc, char *argv[]) {
   };
 
   while ((opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1) {
-    if (opt == 'c') {
+    if (opt == 'b') {
+      backup_dir = malloc(strlen(optarg) + 1);
+      strcpy(backup_dir, optarg);
+    } else if (opt == 'c') {
       command = malloc(strlen(optarg) + 1);
       strcpy(command, optarg);
     } else if (opt == 'e') {
