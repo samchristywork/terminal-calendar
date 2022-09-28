@@ -127,6 +127,30 @@ cJSON *readJSONFile(FILE *f) {
   return handle;
 }
 
+void die(WINDOW *w, int no_clear, int status, char *reason) {
+  delwin(w);
+  endwin();
+  refresh();
+  cJSON_Delete(cjson);
+  fclose(log_file);
+  free(calendar_filename);
+  unlink(lock_location);
+
+  if (!no_clear) {
+    printf("\33[H\33[2J");
+  }
+
+  printf("%s\n", reason);
+
+  exit(status);
+}
+
+int cmpfunc(const void *a, const void *b) {
+  const char *aa = *(const char **)a;
+  const char *bb = *(const char **)b;
+  return strcmp(aa, bb);
+}
+
 /*
  * Save data to disk
  */
@@ -668,24 +692,6 @@ void search(WINDOW *w, int calendar_scroll, int date_offset, int flags, char sym
     printw(search_string);
   }
   refresh();
-}
-
-void die(WINDOW *w, int no_clear, int status, char *reason) {
-  delwin(w);
-  endwin();
-  refresh();
-  cJSON_Delete(cjson);
-  fclose(log_file);
-  free(calendar_filename);
-  unlink(lock_location);
-
-  if (!no_clear) {
-    printf("\33[H\33[2J");
-  }
-
-  printf("%s\n", reason);
-
-  exit(status);
 }
 
 /*
