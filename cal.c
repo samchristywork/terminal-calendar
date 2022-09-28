@@ -879,6 +879,12 @@ int main(int argc, char *argv[]) {
     sprintf(calendar_filename, "%s/%s", home, f);
   }
 
+  if (!backup_dir) {
+    char *f = ".terminal_calendar_backup";
+    backup_dir = malloc(strlen(f) + 1 + strlen(home) + 1);
+    sprintf(backup_dir, "%s/%s", home, f);
+  }
+
   /*
    * Open the appropriate save file and read it into a cJSON struct
    */
