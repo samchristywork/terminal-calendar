@@ -18,8 +18,8 @@ FILE *log_file;
 cJSON *cjson;
 cJSON *dates;
 cJSON *weekdays;
-char *calendar_filename;
 char *backup_dir = 0;
+char *calendar_filename = 0;
 char *command = 0;
 char *home = 0;
 char *lock_location = "/tmp/termcal.lock";
@@ -732,7 +732,6 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
 int main(int argc, char *argv[]) {
 
   int no_clear = 0;
-  calendar_filename = NULL;
 
   text_editor = getenv("EDITOR");
   home = getenv("HOME");
