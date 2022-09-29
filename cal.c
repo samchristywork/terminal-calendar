@@ -892,6 +892,8 @@ int main(int argc, char *argv[]) {
     sprintf(backup_dir, "%s/%s", home, f);
   }
 
+  mkdir(backup_dir, 0777);
+
   /*
    * Open the appropriate save file and read it into a cJSON struct
    */
