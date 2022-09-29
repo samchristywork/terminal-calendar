@@ -151,6 +151,9 @@ int cmpfunc(const void *a, const void *b) {
   return strcmp(aa, bb);
 }
 
+/*
+ * Note that this method will fail briefly on Saturday November 20, 2286.
+ */
 void remove_old_backups() {
 
   DIR *dirp = opendir(backup_dir);
@@ -879,6 +882,10 @@ int main(int argc, char *argv[]) {
     sprintf(calendar_filename, "%s/%s", home, f);
   }
 
+  /*
+   * Use default backup directory if none supplied. Create directory if it does
+   * not exist.
+   */
   if (!backup_dir) {
     char *f = ".terminal_calendar_backup";
     backup_dir = malloc(strlen(f) + 1 + strlen(home) + 1);
