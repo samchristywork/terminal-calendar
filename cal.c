@@ -697,6 +697,7 @@ void draw_help() {
               "| p                | 'Print' the calendar using the print script.      |\n"
               "| 0                | Move the cursor to the current day.               |\n"
               "| d                | Delete the data for the day under the cursor.     |\n"
+              "| b                | Edit the backlog.                                 |\n"
               "| r                | Edit the recurring task for that day of the week. |\n"
               "| e                | Cycles views in the calendar pane.                |\n"
               "| /                | Search for a string in day data using regex.      |\n"
@@ -711,14 +712,16 @@ void draw_help() {
 void usage(char *argv[]) {
   fprintf(stderr,
           "Usage: %s [options]\n"
-          " -c,--command   The command to be run when \"printing\" (default `./print.sh`).\n"
-          " -e,--editor    The command representing the text editor to use (default vim).\n"
-          " -f,--file      Calendar file to use. Default \"calendar.json\".\n"
-          " -h,--help      Print this usage message.\n"
-          " -l,--log-file  The name of the log file to be used.\n"
-          " -n,--no-clear  Do not clear the screen on shutdown.\n"
-          " -o,--lock-file The name of the lock file to be used (default /tmp/termcal.lock).\n"
-          " -v,--verbose   Display additional logging information.\n"
+          " -b,--num_backups The number of backup files to keep (default 10).\n"
+          " -c,--command     The command to be run when \"printing\" (default `./print.sh`).\n"
+          " -d,--backup_dir  The directory to store backup files in (default ~/.terminal_calendar_backup/).\n"
+          " -e,--editor      The command representing the text editor to use (default vim).\n"
+          " -f,--file        Calendar file to use. Default \"calendar.json\".\n"
+          " -h,--help        Print this usage message.\n"
+          " -l,--log-file    The name of the log file to be used.\n"
+          " -n,--no-clear    Do not clear the screen on shutdown.\n"
+          " -o,--lock-file   The name of the lock file to be used (default /tmp/termcal.lock).\n"
+          " -v,--verbose     Display additional logging information.\n"
           "",
           argv[0]);
   exit(EXIT_FAILURE);

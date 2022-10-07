@@ -124,6 +124,7 @@ This is a comprehensive list of the default key bindings for this program:
 | p                | 'Print' the calendar using the print script.      |
 | 0                | Move the cursor to the current day.               |
 | d                | Delete the data for the day under the cursor.     |
+| b                | Edit the backlog.                                 |
 | r                | Edit the recurring task for that day of the week. |
 | e                | Cycles views in the calendar pane.                |
 | /                | Search for a string in day data using regex.      |
@@ -155,14 +156,16 @@ The terminal calendar can be invoked as described in the usage statement:
 
 ```
 Usage: terminal_calendar [options]
- -c,--command   The command to be run when "printing" (default `./print.sh`).
- -e,--editor    The command representing the text editor to use (default vim).
- -f,--file      Calendar file to use. Default "calendar.json".
- -h,--help      Print this usage message.
- -l,--log-file  The name of the log file to be used.
- -n,--no-clear  Do not clear the screen on shutdown.
- -o,--lock-file The name of the lock file to be used (default /tmp/termcal.lock).
- -v,--verbose   Display additional logging information.
+ -b,--num_backups The number of backup files to keep (default 10).
+ -c,--command     The command to be run when "printing" (default `./print.sh`).
+ -d,--backup_dir  The directory to store backup files in (default ~/.terminal_calendar_backup/).
+ -e,--editor      The command representing the text editor to use (default vim).
+ -f,--file        Calendar file to use. Default "calendar.json".
+ -h,--help        Print this usage message.
+ -l,--log-file    The name of the log file to be used.
+ -n,--no-clear    Do not clear the screen on shutdown.
+ -o,--lock-file   The name of the lock file to be used (default /tmp/termcal.lock).
+ -v,--verbose     Display additional logging information.
 ```
 
 Users can also configure the editor by setting the `EDITOR` environment
