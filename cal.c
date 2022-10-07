@@ -29,6 +29,7 @@ char search_string[256] = {0};
 char status_line[256];
 int calendar_view_mode = 0;
 int modified = 0;
+int num_backups = 10;
 int reg_flags = 0;
 int running = 1;
 int verbose = 0;
@@ -188,7 +189,7 @@ void remove_old_backups() {
     flog("%s\n", dirs[i]);
   }
 
-  int toremove = count - 10;
+  int toremove = count - num_backups;
   if (toremove > 0) {
     for (int i = 0; i < toremove; i++) {
       char filename[PATH_MAX];
@@ -807,17 +808,20 @@ int main(int argc, char *argv[]) {
       {"lock-file", required_argument, 0, 'o'},
       {"log-file", required_argument, 0, 'l'},
       {"no-clear", no_argument, 0, 'n'},
+      {"num_backups", required_argument, 0, 'b'},
       {"verbose", no_argument, 0, 'v'},
       {0, 0, 0, 0},
   };
 
   while ((opt = getopt_long(argc, argv, optstring, long_options, &option_index)) != -1) {
     if (opt == 'b') {
-      backup_dir = malloc(strlen(optarg) + 1);
-      strcpy(backup_dir, optarg);
+      num_backups = atoi(optarg);
     } else if (opt == 'c') {
       command = malloc(strlen(optarg) + 1);
       strcpy(command, optarg);
+    } else if (opt == 'd') {
+      backup_dir = malloc(strlen(optarg) + 1);
+      strcpy(backup_dir, optarg);
     } else if (opt == 'e') {
       text_editor = malloc(strlen(optarg) + 1);
       strcpy(text_editor, optarg);
