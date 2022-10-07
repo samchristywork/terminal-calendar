@@ -817,9 +817,9 @@ int main(int argc, char *argv[]) {
    */
   int opt;
   int option_index = 0;
-  char *optstring = "b:c:e:f:hl:no:v";
+  char *optstring = "b:d:c:e:f:hl:no:v";
   static struct option long_options[] = {
-      {"backup_dir", required_argument, 0, 'b'},
+      {"backup_dir", required_argument, 0, 'd'},
       {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
       {"file", required_argument, 0, 'f'},
@@ -1048,6 +1048,10 @@ int main(int argc, char *argv[]) {
 
     case ('0'):
       date_offset = 0;
+      break;
+
+    case ('b'):
+      edit_date(cjson, "backlog");
       break;
 
     case ('d'):
