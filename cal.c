@@ -450,6 +450,25 @@ void print_day_pane(WINDOW *w, int rootx, int rooty, int date_offset) {
   }
   len += 7;
 
+  cJSON *backlog = find(cjson, "backlog");
+  if (backlog) {
+    cJSON *data = find(backlog, "data");
+    if (data) {
+      int j = 0;
+      for (int i = 0; i < strlen(data->valuestring); i++) {
+        if (data->valuestring[i] == '\n') {
+          j++;
+        }
+      }
+      if (j) {
+        move(rooty, width - len - 3 - log10(j + 1));
+        color_set(8, NULL);
+        printw("(%d)", j);
+        color_set(0, NULL);
+      }
+    }
+  }
+
   attron(A_BOLD);
   move(rooty, width - len);
   color_set(2, NULL);
