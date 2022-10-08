@@ -170,7 +170,7 @@ The terminal calendar can be invoked as described in the usage statement:
 
 ```
 Usage: terminal_calendar [options]
- -b,--num_backups The number of backup files to keep (default 10).
+ -b,--num_backups The number of backup files to keep (default 10). Specify 0 for unlimited files.
  -c,--command     The command to be run when "printing" (default `./print.sh`).
  -d,--backup_dir  The directory to store backup files in (default ~/.terminal_calendar_backup/).
  -e,--editor      The command representing the text editor to use (default vim).

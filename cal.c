@@ -189,13 +189,15 @@ void remove_old_backups() {
     flog("%s\n", dirs[i]);
   }
 
-  int toremove = count - num_backups;
-  if (toremove > 0) {
-    for (int i = 0; i < toremove; i++) {
-      char filename[PATH_MAX];
-      sprintf(filename, "%s/%s", backup_dir, dirs[i]);
-      flog("Removing %s\n", filename);
-      unlink(filename);
+  if (num_backups > 0) {
+    int toremove = count - num_backups;
+    if (toremove > 0) {
+      for (int i = 0; i < toremove; i++) {
+        char filename[PATH_MAX];
+        sprintf(filename, "%s/%s", backup_dir, dirs[i]);
+        flog("Removing %s\n", filename);
+        unlink(filename);
+      }
     }
   }
 }
@@ -712,7 +714,7 @@ void draw_help() {
 void usage(char *argv[]) {
   fprintf(stderr,
           "Usage: %s [options]\n"
-          " -b,--num_backups The number of backup files to keep (default 10).\n"
+          " -b,--num_backups The number of backup files to keep (default 10). Specify 0 for unlimited files.\n"
           " -c,--command     The command to be run when \"printing\" (default `./print.sh`).\n"
           " -d,--backup_dir  The directory to store backup files in (default ~/.terminal_calendar_backup/).\n"
           " -e,--editor      The command representing the text editor to use (default vim).\n"
