@@ -157,6 +157,13 @@ website or server for online access and backups. I use something similar to the
 following command so that I can see my calendar on a webpage even when I'm away
 from my computer:
 
+## Backups
+
+By default this program will place up to ten copies of the save file in
+`~/.terminal_calendar_backup/`. Once this limit is reached, the oldest file will
+be deleted and a new one will be added. This process takes place every time the
+save function is used. The name of the file is the Unix epoch time stamp.
+
 ## Usage
 
 The terminal calendar can be invoked as described in the usage statement:
