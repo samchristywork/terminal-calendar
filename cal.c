@@ -1098,13 +1098,6 @@ int main(int argc, char *argv[]) {
       print();
       break;
 
-    case ('\n'):
-      edit_date(dates, tag);
-      break;
-
-    case (' '):
-      edit_date(dates, tag);
-      break;
 
     case ('i'):
       edit_date(dates, tag);
