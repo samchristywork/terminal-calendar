@@ -83,6 +83,13 @@ There is a Vim syntax file that is included in this repository that I use to
 keep the color coding in my editor. To use it, move it to `~/.vim/syntax/` or
 `~/.config/nvim/syntax/` if you have `neovim` instead.
 
+## Backlog
+
+Press 'b' to edit the backlog. This is for data that does not have a date
+associated with it. Data in the backlog will not be counted in the
+green/yellow/red/blue counters in the top right of the screen. If there is data
+in the backlog it will show up in magenta at the top of the screen.
+
 ## Status Line
 
 The status line provides messages to the user, which range from confirmations
