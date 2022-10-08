@@ -185,6 +185,11 @@ Usage: terminal_calendar [options]
 Users can also configure the editor by setting the `EDITOR` environment
 variable.
 
+## Known Issues
+
+The method for deleting old backups relies on the Unix time stamp being a
+constant width number, and will fail briefly on Saturday November 20, 2286.
+
 ## Dependencies
 
 These are the dependencies for terminal-calendar:
