@@ -7,13 +7,13 @@ CFLAGS := -g -Wall -Wpedantic
 
 all: build/terminal_calendar
 
-build/terminal_calendar: cal.c version.h build/graphics.o
+build/terminal_calendar: src/cal.c src/version.h build/graphics.o
 	mkdir -p build/
-	${CC} ${CFLAGS} cal.c build/graphics.o -o $@ ${LIBS}
+	${CC} ${CFLAGS} src/cal.c build/graphics.o -o $@ ${LIBS}
 
-build/graphics.o: graphics.c graphics.h
+build/graphics.o: src/graphics.c src/graphics.h
 	mkdir -p build/
-	${CC} ${CFLAGS} -c graphics.c -o $@ ${LIBS}
+	${CC} ${CFLAGS} -c src/graphics.c -o $@ ${LIBS}
 
 install: build/terminal_calendar
 	@echo "Installing terminal_calendar Version" $(VERSION)
