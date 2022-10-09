@@ -1139,12 +1139,9 @@ int main(int argc, char *argv[]) {
       calendar_scroll++;
     } else if (c == keys.calendar_scroll_up) {
       calendar_scroll--;
+    }else {
+      flog("Uncaught keypress: %d\n", c);
     }
-
-    //default:
-    //  flog("Uncaught keypress: %d\n", c);
-    //  break;
-    //}
 
     if (running == 0) {
       break;
