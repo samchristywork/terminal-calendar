@@ -35,6 +35,27 @@ int running = 1;
 int verbose = 0;
 time_t startup_time;
 
+struct key_mapping {
+    int reset_date_offset;
+    int edit_backlog;
+    int delete_entry;
+    int edit_recurring;
+    int move_left;
+    int move_down;
+    int move_up;
+    int move_right;
+    int save;
+    int print;
+    int edit_date;
+    int cycle_mode;
+    int quit;
+    int search;
+    int reverse_search;
+    int help;
+    int calendar_scroll_down;
+    int calendar_scroll_up;
+} keys;
+
 #define flog(...) fprintf(log_file, ##__VA_ARGS__);
 #define set_statusline(...)      \
   {                              \
@@ -812,6 +833,25 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
 
 int main(int argc, char *argv[]) {
 
+  keys.reset_date_offset = '0';
+  keys.edit_backlog = 'b';
+  keys.delete_entry = 'd';
+  keys.edit_recurring = 'r';
+  keys.move_left = 'h';
+  keys.move_down = 'j';
+  keys.move_up = 'k';
+  keys.move_right = 'l';
+  keys.save = 's';
+  keys.print = 'p';
+  keys.edit_date = '\n';
+  keys.cycle_mode = 'e';
+  keys.quit = 'q';
+  keys.search = '/';
+  keys.reverse_search = 92; //Backslash
+  keys.help = '?';
+  keys.calendar_scroll_down = KEY_DOWN;
+  keys.calendar_scroll_up = KEY_UP;
+
   int no_clear = 0;
 
   text_editor = getenv("EDITOR");
@@ -1050,99 +1090,91 @@ int main(int argc, char *argv[]) {
       modified = 1;
     }
 
-    switch (c) {
-
-    case ('0'):
+    if (c == keys.reset_date_offset) {
       date_offset = 0;
-      break;
+    }
 
-    case ('b'):
+    if (c == keys.edit_backlog) {
       edit_date(cjson, "backlog");
-      break;
+    }
 
-    case ('d'):
+    if (c == keys.delete_entry) {
       if (verbose) {
         fprintf(log_file, "Deleting calendar entry.\n");
       }
       cJSON_DeleteItemFromObject(dates, tag);
       set_statusline("Deleted entry \"%s\".", tag);
       modified = 1;
-      break;
+    }
 
-    case ('r'):
+    if (c == keys.edit_recurring) {
       edit_date(weekdays, days_short[selected->tm_wday]);
-      break;
+    }
 
-    case ('h'):
+    if (c == keys.move_left) {
       date_offset--;
-      break;
+    }
 
-    case ('j'):
+    if (c == keys.move_down) {
       date_offset += 7;
-      break;
+    }
 
-    case ('k'):
+    if (c == keys.move_up) {
       date_offset -= 7;
-      break;
+    }
 
-    case ('l'):
+    if (c == keys.move_right) {
       date_offset++;
-      break;
+    }
 
-    case ('s'):
+    if (c == keys.save) {
       save();
-      break;
+    }
 
-    case ('p'):
+    if (c == keys.print) {
       save();
       print();
-      break;
+    }
 
-
-    case ('i'):
+    if (c == keys.edit_date) {
       edit_date(dates, tag);
-      break;
+    }
 
-    case ('e'):
+    if (c == keys.cycle_mode) {
       calendar_view_mode++;
       if (calendar_view_mode > 2) {
         calendar_view_mode = 0;
       }
-      break;
+    }
 
-    case ('q'):
+    if (c == keys.quit) {
       if (!modified) {
         running = 0;
       } else {
         set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
       }
-      break;
+    }
 
-    case ('/'):
+    if (c == keys.search) {
       search(w, calendar_scroll, date_offset, 0, '/');
-      break;
+    }
 
-    case (92): // Backslash
+    if (c == keys.reverse_search) {
       search(w, calendar_scroll, date_offset, REG_ICASE, 92);
-      break;
+    }
 
-    case ('?'):
+    if (c == keys.help) {
       clear();
       draw_help();
       getch();
-      break;
+    }
 
-    case (KEY_DOWN):
+    if (c == keys.calendar_scroll_down) {
       calendar_scroll++;
-      break;
+    }
 
-    case (KEY_UP):
+    if (c == keys.calendar_scroll_up) {
       calendar_scroll--;
-      break;
-
-    default:
-      flog("Uncaught keypress: %d\n", c);
-      break;
     }
 
     if (running == 0) {
