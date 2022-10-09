@@ -1088,94 +1088,63 @@ int main(int argc, char *argv[]) {
         cJSON_SetNumberHelper(mask, value);
       }
       modified = 1;
-    }
-
-    if (c == keys.reset_date_offset) {
+    } else if (c == keys.reset_date_offset) {
       date_offset = 0;
-    }
-
-    if (c == keys.edit_backlog) {
+    } else if (c == keys.edit_backlog) {
       edit_date(cjson, "backlog");
-    }
-
-    if (c == keys.delete_entry) {
+    } else if (c == keys.delete_entry) {
       if (verbose) {
         fprintf(log_file, "Deleting calendar entry.\n");
       }
       cJSON_DeleteItemFromObject(dates, tag);
       set_statusline("Deleted entry \"%s\".", tag);
       modified = 1;
-    }
-
-    if (c == keys.edit_recurring) {
+    } else if (c == keys.edit_recurring) {
       edit_date(weekdays, days_short[selected->tm_wday]);
-    }
-
-    if (c == keys.move_left) {
+    } else if (c == keys.move_left) {
       date_offset--;
-    }
-
-    if (c == keys.move_down) {
+    } else if (c == keys.move_down) {
       date_offset += 7;
-    }
-
-    if (c == keys.move_up) {
+    } else if (c == keys.move_up) {
       date_offset -= 7;
-    }
-
-    if (c == keys.move_right) {
+    } else if (c == keys.move_right) {
       date_offset++;
-    }
-
-    if (c == keys.save) {
+    } else if (c == keys.save) {
       save();
-    }
-
-    if (c == keys.print) {
+    } else if (c == keys.print) {
       save();
       print();
-    }
-
-    if (c == keys.edit_date) {
+    } else if (c == keys.edit_date) {
       edit_date(dates, tag);
-    }
-
-    if (c == keys.cycle_mode) {
+    } else if (c == keys.cycle_mode) {
       calendar_view_mode++;
       if (calendar_view_mode > 2) {
         calendar_view_mode = 0;
       }
-    }
-
-    if (c == keys.quit) {
+    } else if (c == keys.quit) {
       if (!modified) {
         running = 0;
       } else {
         set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
       }
-    }
-
-    if (c == keys.search) {
+    } else if (c == keys.search) {
       search(w, calendar_scroll, date_offset, 0, '/');
-    }
-
-    if (c == keys.reverse_search) {
+    } else if (c == keys.reverse_search) {
       search(w, calendar_scroll, date_offset, REG_ICASE, 92);
-    }
-
-    if (c == keys.help) {
+    } else if (c == keys.help) {
       clear();
       draw_help();
       getch();
-    }
-
-    if (c == keys.calendar_scroll_down) {
+    } else if (c == keys.calendar_scroll_down) {
       calendar_scroll++;
-    }
-
-    if (c == keys.calendar_scroll_up) {
+    } else if (c == keys.calendar_scroll_up) {
       calendar_scroll--;
     }
+
+    //default:
+    //  flog("Uncaught keypress: %d\n", c);
+    //  break;
+    //}
 
     if (running == 0) {
       break;
