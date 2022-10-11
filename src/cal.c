@@ -1104,11 +1104,11 @@ int main(int argc, char *argv[]) {
     getmaxyx(w, height, width);
     height = height + width - width;
 
-    if (date_offset + calendar_scroll * 7 < 0) {
+    while (date_offset + calendar_scroll * 7 < 0) {
       calendar_scroll++;
     }
 
-    if (date_offset + calendar_scroll * 7 > height * 7 * .9) {
+    while (date_offset + calendar_scroll * 7 > height * 7 * .9) {
       calendar_scroll--;
     }
 
