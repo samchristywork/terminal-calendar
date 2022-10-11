@@ -1099,6 +1099,19 @@ int main(int argc, char *argv[]) {
       flog("Uncaught keypress: %d\n", c);
     }
 
+    int width;
+    int height;
+    getmaxyx(w, height, width);
+    height = height + width - width;
+
+    if (date_offset + calendar_scroll * 7 < 0) {
+      calendar_scroll++;
+    }
+
+    if (date_offset + calendar_scroll * 7 > height * 7 * .9) {
+      calendar_scroll--;
+    }
+
     if (running == 0) {
       break;
     }
@@ -1112,11 +1125,6 @@ int main(int argc, char *argv[]) {
       move(0, 0);
       printw("(*)");
     }
-
-    int width;
-    int height;
-    getmaxyx(w, height, width);
-    height = height + width - width;
 
     status_line[200] = 0;
     move(height - 1, 0);
