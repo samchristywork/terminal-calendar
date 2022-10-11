@@ -49,6 +49,10 @@ struct key_mapping {
   int move_left;
   int move_right;
   int move_up;
+  int move_fast_down;
+  int move_fast_left;
+  int move_fast_right;
+  int move_fast_up;
   int print;
   int quit;
   int reset_date_offset;
@@ -777,6 +781,10 @@ int main(int argc, char *argv[]) {
   keys.edit_backlog = 'b';
   keys.delete_entry = 'd';
   keys.edit_recurring = 'r';
+  keys.move_fast_left = 'H';
+  keys.move_fast_down = 'J';
+  keys.move_fast_up = 'K';
+  keys.move_fast_right = 'L';
   keys.move_left = 'h';
   keys.move_down = 'j';
   keys.move_up = 'k';
@@ -1049,6 +1057,14 @@ int main(int argc, char *argv[]) {
       date_offset -= 7;
     } else if (c == keys.move_right) {
       date_offset++;
+    } else if (c == keys.move_fast_left) {
+      date_offset-=3;
+    } else if (c == keys.move_fast_down) {
+      date_offset += 7 * 3;
+    } else if (c == keys.move_fast_up) {
+      date_offset -= 7 * 3;
+    } else if (c == keys.move_fast_right) {
+      date_offset+=3;
     } else if (c == keys.save) {
       save();
     } else if (c == keys.print) {
