@@ -13,7 +13,10 @@
 
 #include "cal.h"
 #include "graphics.h"
+#include "util.h"
 #include "version.h"
+
+#define ONEDAY 60 * 60 * 24
 
 FILE *log_file;
 cJSON *cjson;
@@ -1048,6 +1051,7 @@ int main(int argc, char *argv[]) {
       set_statusline("Deleted entry \"%s\".", tag);
       modified = 1;
     } else if (c == keys.edit_recurring) {
+      char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
       edit_date(weekdays, days_short[selected->tm_wday]);
     } else if (c == keys.move_left) {
       date_offset--;
@@ -1058,13 +1062,13 @@ int main(int argc, char *argv[]) {
     } else if (c == keys.move_right) {
       date_offset++;
     } else if (c == keys.move_fast_left) {
-      date_offset-=3;
+      date_offset -= 3;
     } else if (c == keys.move_fast_down) {
       date_offset += 7 * 3;
     } else if (c == keys.move_fast_up) {
       date_offset -= 7 * 3;
     } else if (c == keys.move_fast_right) {
-      date_offset+=3;
+      date_offset += 3;
     } else if (c == keys.save) {
       save();
     } else if (c == keys.print) {

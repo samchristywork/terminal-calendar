@@ -11,6 +11,13 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "util.h"
+
+#define ONEDAY 60 * 60 * 24
+
+char *months_short[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
 /*
  * Print text, respecting newlines, and coloring the text based on the
  * 1-character signifier at the beginning of the line
