@@ -2,7 +2,6 @@
 #include <curses.h>
 #include <dirent.h>
 #include <getopt.h>
-#include <math.h>
 #include <regex.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -11,7 +10,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "cal.h"
 #include "graphics.h"
 #include "util.h"
 #include "version.h"

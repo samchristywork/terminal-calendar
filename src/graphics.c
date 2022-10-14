@@ -1,15 +1,10 @@
 #include <cjson/cJSON.h>
 #include <curses.h>
-#include <dirent.h>
-#include <getopt.h>
 #include <math.h>
 #include <regex.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "util.h"
 
