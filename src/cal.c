@@ -69,9 +69,9 @@ struct key_mapping {
     _set_statusline(buf);        \
   }
 
-#define redraw()                                         \
-  print_cal_pane(w, 0, 0, calendar_scroll, date_offset); \
-  print_day_pane(w, 27, 0, date_offset);
+#define redraw()                                                                                                           \
+  draw_cal_pane(w, 0, 0, calendar_scroll, date_offset, search_string, reg_flags, startup_time, dates, calendar_view_mode); \
+  draw_day_pane(w, 27, 0, date_offset, startup_time, dates, weekdays, cjson);
 
 /*
  * Handle ctrl-c
