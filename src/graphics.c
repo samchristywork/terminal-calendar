@@ -332,3 +332,16 @@ void draw_help() {
   print_multiline(str, 0, 0, 80, 0);
 }
 
+void draw_statusline(WINDOW *w, char *status_line) {
+  int width;
+  int height;
+  getmaxyx(w, height, width);
+
+  status_line[200] = 0;
+  move(height - 1, 0);
+  printw(status_line);
+
+  move(height - 1, width - 19);
+  printw("Type '?' for help.");
+
+}

@@ -367,20 +367,6 @@ void search(WINDOW *w, int calendar_scroll, int date_offset, int flags, char sym
   refresh();
 }
 
-void draw_statusline(WINDOW *w) {
-  int width;
-  int height;
-  getmaxyx(w, height, width);
-
-  status_line[200] = 0;
-  move(height - 1, 0);
-  printw(status_line);
-
-  move(height - 1, width - 19);
-  printw("Type '?' for help.");
-
-}
-
 /*
  * Populate the "major", "minor", and "build" int pointers with the data in the string.
  *
@@ -774,7 +760,7 @@ int main(int argc, char *argv[]) {
       printw("(*)");
     }
 
-    draw_statusline(w);
+    draw_statusline(w, status_line);
 
     refresh();
     c = getch();
