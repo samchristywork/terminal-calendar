@@ -54,6 +54,7 @@ struct key_mapping {
   int move_fast_left;
   int move_fast_right;
   int move_fast_up;
+  int next_empty;
   int print;
   int quit;
   int reset_date_offset;
@@ -410,28 +411,29 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
 
 int main(int argc, char *argv[]) {
 
-  keys.reset_date_offset = '0';
-  keys.edit_backlog = 'b';
-  keys.delete_entry = 'd';
-  keys.edit_recurring = 'r';
-  keys.move_fast_left = 'H';
-  keys.move_fast_down = 'J';
-  keys.move_fast_up = 'K';
-  keys.move_fast_right = 'L';
-  keys.move_left = 'h';
-  keys.move_down = 'j';
-  keys.move_up = 'k';
-  keys.move_right = 'l';
-  keys.save = 's';
-  keys.print = 'p';
-  keys.edit_date = '\n';
-  keys.cycle_mode = 'e';
-  keys.quit = 'q';
-  keys.search = '/';
-  keys.reverse_search = 92; //Backslash
-  keys.help = '?';
   keys.calendar_scroll_down = KEY_DOWN;
   keys.calendar_scroll_up = KEY_UP;
+  keys.cycle_mode = 'e';
+  keys.delete_entry = 'd';
+  keys.edit_backlog = 'b';
+  keys.edit_date = '\n';
+  keys.edit_recurring = 'r';
+  keys.help = '?';
+  keys.move_down = 'j';
+  keys.move_fast_down = 'J';
+  keys.move_fast_left = 'H';
+  keys.move_fast_right = 'L';
+  keys.move_fast_up = 'K';
+  keys.move_left = 'h';
+  keys.move_right = 'l';
+  keys.move_up = 'k';
+  keys.next_empty = 'n';
+  keys.print = 'p';
+  keys.quit = 'q';
+  keys.reset_date_offset = '0';
+  keys.reverse_search = 92; //Backslash
+  keys.save = 's';
+  keys.search = '/';
 
   int no_clear = 0;
 
@@ -699,6 +701,18 @@ int main(int argc, char *argv[]) {
       date_offset -= 7 * 3;
     } else if (c == keys.move_fast_right) {
       date_offset += 3;
+    } else if (c == keys.next_empty) {
+      while(1){
+        time_t s = startup_time + date_offset * ONEDAY;
+        struct tm *sel = localtime(&s);
+        char t[256];
+        strftime(t, 256, "%Y-%m-%d", sel);
+        cJSON *root = find(dates, t);
+        if (!root) {
+          break;
+        }
+        date_offset++;
+      }
     } else if (c == keys.save) {
       save();
     } else if (c == keys.print) {
