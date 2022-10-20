@@ -55,6 +55,7 @@ struct key_mapping {
   int move_fast_right;
   int move_fast_up;
   int next_empty;
+  int next_n;
   int print;
   int quit;
   int reset_date_offset;
@@ -428,6 +429,7 @@ int main(int argc, char *argv[]) {
   keys.move_right = 'l';
   keys.move_up = 'k';
   keys.next_empty = 'n';
+  keys.next_n = 'N';
   keys.print = 'p';
   keys.quit = 'q';
   keys.reset_date_offset = '0';
@@ -702,7 +704,7 @@ int main(int argc, char *argv[]) {
     } else if (c == keys.move_fast_right) {
       date_offset += 3;
     } else if (c == keys.next_empty) {
-      while(1){
+      while (1) {
         time_t s = startup_time + date_offset * ONEDAY;
         struct tm *sel = localtime(&s);
         char t[256];
@@ -710,6 +712,32 @@ int main(int argc, char *argv[]) {
         cJSON *root = find(dates, t);
         if (!root) {
           break;
+        }
+        date_offset++;
+      }
+    } else if (c == keys.next_n) {
+      while (1) {
+        time_t s = startup_time + date_offset * ONEDAY;
+        struct tm *sel = localtime(&s);
+        char t[256];
+        strftime(t, 256, "%Y-%m-%d", sel);
+        cJSON *root = find(dates, t);
+        if (!root) {
+          break;
+        }
+        if (root) {
+          cJSON *day_data = find(root, "data");
+          if (day_data) {
+            int count = 0;
+            for (int i = 0; i < strlen(day_data->valuestring); i++) {
+              if (day_data->valuestring[i] == '\n') {
+                count++;
+              }
+            }
+            if (count < 4) {
+              break;
+            }
+          }
         }
         date_offset++;
       }
