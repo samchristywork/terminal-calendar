@@ -132,7 +132,7 @@ This is a comprehensive list of the default key bindings for this program:
 | 0                | Move the cursor to the current day.               |
 | n                | Move cursor to the next empty date.               |
 | N                | Move cursor to next date with `num_lines` < 4.    |
-| d                | Delete the data for the day under the cursor.     |
+| D                | Delete the data for the day under the cursor.     |
 | b                | Edit the backlog.                                 |
 | r                | Edit the recurring task for that day of the week. |
 | e                | Cycles views in the calendar pane.                |

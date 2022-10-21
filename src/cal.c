@@ -415,7 +415,7 @@ int main(int argc, char *argv[]) {
   keys.calendar_scroll_down = KEY_DOWN;
   keys.calendar_scroll_up = KEY_UP;
   keys.cycle_mode = 'e';
-  keys.delete_entry = 'd';
+  keys.delete_entry = 'D';
   keys.edit_backlog = 'b';
   keys.edit_date = '\n';
   keys.edit_recurring = 'r';

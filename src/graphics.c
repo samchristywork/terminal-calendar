@@ -321,7 +321,7 @@ void draw_help() {
               "| 0                | Move the cursor to the current day.               |\n"
               "| n                | Move cursor to the next empty date.               |\n"
               "| N                | Move cursor to next date with `num_lines` < 4.    |\n"
-              "| d                | Delete the data for the day under the cursor.     |\n"
+              "| D                | Delete the data for the day under the cursor.     |\n"
               "| b                | Edit the backlog.                                 |\n"
               "| r                | Edit the recurring task for that day of the week. |\n"
               "| e                | Cycles views in the calendar pane.                |\n"
