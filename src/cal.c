@@ -639,6 +639,9 @@ int main(int argc, char *argv[]) {
   int calendar_scroll = 4;
   int date_offset = 0;
   startup_time = time(0);
+  struct tm *now = localtime(&startup_time);
+  now->tm_hour=12;
+  startup_time = mktime(now);
 
   /*
    * Main Loop
