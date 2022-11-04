@@ -62,6 +62,9 @@ int print_multiline(char *str, int rootx, int rooty, int width, int height) {
 
       ptr += i + 1;
       i = 0;
+      while(ptr[0]=='\n'){
+        ptr++;
+      }
       line++;
     }
 
