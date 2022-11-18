@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include <locale.h>
 
 #include "graphics.h"
 #include "util.h"
@@ -411,6 +412,7 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
 }
 
 int main(int argc, char *argv[]) {
+  setlocale(LC_ALL, "");
 
   keys.calendar_scroll_down = KEY_DOWN;
   keys.calendar_scroll_up = KEY_UP;

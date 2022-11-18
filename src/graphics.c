@@ -1,5 +1,5 @@
 #include <cjson/cJSON.h>
-#include <curses.h>
+#include <ncurses.h>
 #include <math.h>
 #include <regex.h>
 #include <stdlib.h>
