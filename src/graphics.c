@@ -294,7 +294,7 @@ void draw_cal_pane(WINDOW *w, int rootx, int rooty, int calendar_scroll, int dat
         printw("%d", num_tasks);
       }
     } else {
-      printw("%d", tm->tm_mon);
+      printw("%d", tm->tm_mon + 1);
     }
     color_set(0, NULL);
     attroff(A_BOLD);
