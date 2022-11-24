@@ -217,7 +217,7 @@ void remove_old_backups() {
 void save() {
   cJSON *version = find(cjson, "version");
   if (!version) {
-    version = cJSON_CreateString(TERMINAL_CALENDAR_VERSION);
+    version = cJSON_CreateString(VERSION);
     cJSON_AddItemToObject(cjson, "version", version);
   }
   char *str = cJSON_Print(cjson);

@@ -20,7 +20,6 @@ build/util.o: src/util.*
 	${CC} ${CFLAGS} -c src/util.c -o $@ ${LIBS}
 
 install: build/terminal_calendar
-	@echo "Installing terminal_calendar Version" $(VERSION)
 	mkdir -p $(PREFIX)/bin
 	mkdir -p $(MANPREFIX)/man1
 	cp build/terminal_calendar $(PREFIX)/bin
