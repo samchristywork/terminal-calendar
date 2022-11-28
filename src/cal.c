@@ -217,7 +217,7 @@ void remove_old_backups() {
 void save() {
   cJSON *version = find(cjson, "version");
   if (!version) {
-    version = cJSON_CreateString(VERSION);
+    version = cJSON_CreateString(VERSION_STRING_SHORT);
     cJSON_AddItemToObject(cjson, "version", version);
   }
   char *str = cJSON_Print(cjson);
@@ -325,6 +325,7 @@ void usage(char *argv[]) {
           " -n,--no-clear    Do not clear the screen on shutdown.\n"
           " -o,--lock-file   The name of the lock file to be used (default /tmp/termcal.lock).\n"
           " -v,--verbose     Display additional logging information.\n"
+          " -V,--version     Display the software version and exit.\n"
           "",
           argv[0]);
   exit(EXIT_FAILURE);
@@ -411,6 +412,10 @@ void parse_version_string(char *str, int *major, int *minor, int *build) {
   die(NULL, 1, EXIT_FAILURE, "Version parse error.");
 }
 
+void print_version() {
+  printf("%s\n\n%s\n", VERSION_STRING, LICENSE_STRING);
+}
+
 int main(int argc, char *argv[]) {
   setlocale(LC_ALL, "");
 
@@ -449,8 +454,9 @@ int main(int argc, char *argv[]) {
    */
   int opt;
   int option_index = 0;
-  char *optstring = "b:d:c:e:f:hl:no:v";
+  char *optstring = "b:d:c:e:f:hl:no:vz:V";
   static struct option long_options[] = {
+      {"cli", required_argument, 0, 'z'},
       {"backup_dir", required_argument, 0, 'd'},
       {"command", required_argument, 0, 'c'},
       {"editor", required_argument, 0, 'e'},
@@ -461,6 +467,7 @@ int main(int argc, char *argv[]) {
       {"no-clear", no_argument, 0, 'n'},
       {"num_backups", required_argument, 0, 'b'},
       {"verbose", no_argument, 0, 'v'},
+      {"version", no_argument, 0, 'V'},
       {0, 0, 0, 0},
   };
 
@@ -491,6 +498,9 @@ int main(int argc, char *argv[]) {
       strcpy(lock_location, optarg);
     } else if (opt == 'v') {
       verbose = 1;
+    } else if (opt == 'V') {
+      print_version();
+      exit(EXIT_SUCCESS);
     } else if (opt == '?') {
       usage(argv);
     } else {
