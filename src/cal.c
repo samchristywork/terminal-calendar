@@ -138,9 +138,11 @@ cJSON *readJSONFile(FILE *f) {
 }
 
 void die(WINDOW *w, int no_clear, int status, char *reason) {
-  delwin(w);
-  endwin();
-  refresh();
+  if(w){
+    delwin(w);
+    endwin();
+    refresh();
+  }
   cJSON_Delete(cjson);
   fclose(log_file);
   free(calendar_filename);
@@ -445,6 +447,8 @@ int main(int argc, char *argv[]) {
   keys.search = '/';
 
   int no_clear = 0;
+  int cli_mode = 0;
+  char *cli_arg = NULL;
 
   text_editor = getenv("EDITOR");
   home = getenv("HOME");
@@ -501,18 +505,14 @@ int main(int argc, char *argv[]) {
     } else if (opt == 'V') {
       print_version();
       exit(EXIT_SUCCESS);
+    } else if (opt == 'z') {
+      cli_mode = 1;
+      cli_arg=malloc(strlen(optarg)+1);
+      strcpy(cli_arg, optarg);
     } else if (opt == '?') {
       usage(argv);
     } else {
       puts(optarg);
-    }
-  }
-
-  if (optind < argc) {
-    int i = optind;
-    while (i < argc) {
-      fprintf(stdout, "Got additional argument: %s\n", argv[i]);
-      i++;
     }
   }
 
@@ -602,6 +602,30 @@ int main(int argc, char *argv[]) {
   if (!dates || !weekdays) {
     fprintf(log_file, "File format error.\n");
     exit(EXIT_FAILURE);
+  }
+
+  if (cli_mode) {
+    if (strcmp(cli_arg, "print") == 0) {
+      if (optind < argc) {
+        int i = optind;
+        while (i < argc) {
+          cJSON *tag = find(dates, argv[i]);
+          if (tag) {
+            cJSON *data = find(tag, "data");
+            fprintf(stdout, "%s\n", data->valuestring);
+          } else {
+            fprintf(stdout, "Not found.\n");
+          }
+          i++;
+        }
+      }
+    }
+
+    cJSON_Delete(cjson);
+    fclose(log_file);
+    free(calendar_filename);
+    unlink(lock_location);
+    return EXIT_SUCCESS;
   }
 
   /*
