@@ -606,10 +606,43 @@ int main(int argc, char *argv[]) {
             cJSON *data = find(tag, "data");
             fprintf(stdout, "%s\n", data->valuestring);
           } else {
-            fprintf(stdout, "Not found.\n");
+            fprintf(stderr, "Tag (%s) not found.\n", argv[i]);
           }
           i++;
         }
+      }
+    }
+
+    if (strcmp(cli_arg, "append") == 0) {
+      if (argc - optind == 2) {
+        cJSON *tag = find(dates, argv[optind]);
+
+        if (!tag) {
+          tag = cJSON_CreateObject();
+          cJSON_AddItemToObject(dates, argv[optind], tag);
+        }
+
+        if (tag) {
+          cJSON *data = find(tag, "data");
+          if (!data) {
+            char *str = malloc(sizeof(argv[optind + 1] + 2));
+            sprintf(str, "%s\n", argv[optind + 1]);
+            data = cJSON_CreateString(str);
+            cJSON_AddItemToObject(tag, "data", data);
+            free(str);
+          } else {
+            char buf[strlen(data->valuestring) + strlen(argv[optind + 1]) + 2];
+            sprintf(buf, "%s%s\n", data->valuestring, argv[optind + 1]);
+            cJSON_DeleteItemFromObject(tag, "data");
+            cJSON *new_data = cJSON_CreateString(buf);
+            cJSON_AddItemToObject(tag, "data", new_data);
+          }
+
+          fprintf(stdout, "%s\n", data->valuestring);
+          save();
+        }
+      } else {
+        fprintf(stderr, "Wrong number of arguments specified.\n");
       }
     }
 
