@@ -2,6 +2,7 @@
 #include <curses.h>
 #include <dirent.h>
 #include <getopt.h>
+#include <locale.h>
 #include <regex.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -9,7 +10,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-#include <locale.h>
+#include <zlib.h>
 
 #include "graphics.h"
 #include "util.h"
@@ -31,7 +32,7 @@ char *text_editor = 0;
 char search_string[256] = {0};
 char status_line[256];
 int calendar_view_mode = 0;
-int modified = 0;
+unsigned int json_checksum = 0;
 int num_backups = 10;
 int reg_flags = 0;
 int running = 1;
@@ -217,36 +218,49 @@ void remove_old_backups() {
  * Save data to disk
  */
 void save() {
-  cJSON *version = find(cjson, "version");
-  if (!version) {
-    version = cJSON_CreateString(VERSION_STRING_SHORT);
-    cJSON_AddItemToObject(cjson, "version", version);
+  {
+    char *str = cJSON_Print(cjson);
+    unsigned long crc = crc32(0L, Z_NULL, 0);
+    if (json_checksum != crc32(crc, str, strlen(str))) {
+
+      cJSON *version = find(cjson, "version");
+      if (!version) {
+        version = cJSON_CreateString(VERSION_STRING_SHORT);
+        cJSON_AddItemToObject(cjson, "version", version);
+      }
+      char *str = cJSON_Print(cjson);
+
+      FILE *f = fopen(calendar_filename, "wb");
+      fprintf(f, "%s", str);
+      fclose(f);
+
+      /*
+       * Backups
+       */
+      char backup_filename[PATH_MAX];
+      bzero(backup_filename, PATH_MAX);
+      sprintf(backup_filename, "%s/%lu", backup_dir, time(0));
+
+      f = fopen(backup_filename, "wb");
+      fprintf(f, "%s", str);
+      fclose(f);
+
+      free(str);
+      {
+        char *str = cJSON_Print(cjson);
+        unsigned long crc = crc32(0L, Z_NULL, 0);
+        json_checksum = crc32(crc, str, strlen(str));
+        free(str);
+      }
+      set_statusline("File saved.");
+      if (verbose) {
+        fprintf(log_file, "Saving file.\n");
+      }
+
+      remove_old_backups();
+    }
+    free(str);
   }
-  char *str = cJSON_Print(cjson);
-
-  FILE *f = fopen(calendar_filename, "wb");
-  fprintf(f, "%s", str);
-  fclose(f);
-
-  /*
-   * Backups
-   */
-  char backup_filename[PATH_MAX];
-  bzero(backup_filename, PATH_MAX);
-  sprintf(backup_filename, "%s/%lu", backup_dir, time(0));
-
-  f = fopen(backup_filename, "wb");
-  fprintf(f, "%s", str);
-  fclose(f);
-
-  free(str);
-  modified = 0;
-  set_statusline("File saved.");
-  if (verbose) {
-    fprintf(log_file, "Saving file.\n");
-  }
-
-  remove_old_backups();
 }
 
 /*
@@ -310,7 +324,6 @@ void edit_date(cJSON *node, char *tag) {
     cJSON_DeleteItemFromObject(root, "data");
     day_data = cJSON_CreateString(buffer);
     cJSON_AddItemToObject(root, "data", day_data);
-    modified = 1;
   }
 }
 
@@ -563,6 +576,11 @@ int main(int argc, char *argv[]) {
     fclose(f);
   }
 
+  char *str = cJSON_Print(cjson);
+  unsigned long crc = crc32(0L, Z_NULL, 0);
+  json_checksum = crc32(crc, str, strlen(str));
+  free(str);
+
   cJSON *version = find(cjson, "version");
   if (version) {
     char *p = version->valuestring;
@@ -746,7 +764,6 @@ int main(int argc, char *argv[]) {
         value ^= maskdiff;
         cJSON_SetNumberHelper(mask, value);
       }
-      modified = 1;
     } else if (c == keys.reset_date_offset) {
       date_offset = 0;
     } else if (c == keys.edit_backlog) {
@@ -757,7 +774,6 @@ int main(int argc, char *argv[]) {
       }
       cJSON_DeleteItemFromObject(dates, tag);
       set_statusline("Deleted entry \"%s\".", tag);
-      modified = 1;
     } else if (c == keys.edit_recurring) {
       char *days_short[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
       edit_date(weekdays, days_short[selected->tm_wday]);
@@ -828,10 +844,15 @@ int main(int argc, char *argv[]) {
         calendar_view_mode = 0;
       }
     } else if (c == keys.quit) {
-      if (!modified) {
-        running = 0;
-      } else {
-        set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
+      {
+        char *str = cJSON_Print(cjson);
+        unsigned long crc = crc32(0L, Z_NULL, 0);
+        if (json_checksum != crc32(crc, str, strlen(str))) {
+          set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
+        } else {
+          running = 0;
+        }
+        free(str);
       }
     } else if (c == keys.search) {
       search(w, calendar_scroll, date_offset, 0, '/');
@@ -871,9 +892,14 @@ int main(int argc, char *argv[]) {
      */
     redraw();
 
-    if (modified) {
-      move(0, 0);
-      printw("(*)");
+    {
+      char *str = cJSON_Print(cjson);
+      unsigned long crc = crc32(0L, Z_NULL, 0);
+      if (json_checksum != crc32(crc, str, strlen(str))) {
+        move(0, 0);
+        printw("(*)");
+      }
+      free(str);
     }
 
     draw_statusline(w, status_line);
