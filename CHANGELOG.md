@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0] - 202X-11-29
+
+### Added
+
+- Added CLI mode
+- Replaced modified flag with a `zlib` checksum-based mechanism
+- New backups are only created when the file has been modified
+- Unicode support
+
+### Fixed
+
+- Fixed bug with lock file being removed
+
 ## [1.0.0] - 2022-11-23
 
 ### Added

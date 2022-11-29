@@ -26,6 +26,7 @@ looks like:
 - Personal calendar implemented as a TUI (ncurses)
 - Color coded for ease of understanding at-a-glance
 - Human readable JSON save file
+- Unicode support
 - Auto-generated backups
 - Editor is configurable as a command line option or through environment variable
 - Lock file to ensure no data conflicts
@@ -39,7 +40,8 @@ looks like:
 - Calendar and reading panes
 - Color coded task completion breakdown
 - Integrated help menu
-- File modification indicator
+- CRC-based file modification indicator
+- CLI mode
 
 ## Calendar Pane
 
@@ -202,10 +204,20 @@ Usage: terminal_calendar [options]
  -n,--no-clear    Do not clear the screen on shutdown.
  -o,--lock-file   The name of the lock file to be used (default /tmp/termcal.lock).
  -v,--verbose     Display additional logging information.
+    --cli         Use the program in CLI mode.
 ```
 
 Users can also configure the editor by setting the `EDITOR` environment
 variable.
+
+## CLI Mode
+
+Invoke the program with `--cli` and specify one of the allowed verbs.
+
+Verb     | Arguments      | Example
+---------|----------------|-----------------------------------------------
+`print`  | `tag(s)`       | `termcal --cli 2022-11-29 2022-11-30`
+`append` | `tag`, `value` | `termcal --cli 2022-11-29 "Finish the README"`
 
 ## Known Issues
 
