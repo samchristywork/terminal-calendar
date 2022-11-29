@@ -516,14 +516,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  if (access(lock_location, F_OK) == 0) {
-    printf("Found a lock file (%s). Another instance of this program may be running.\n", lock_location);
-    exit(EXIT_FAILURE);
-  } else {
-    FILE *tclock = fopen(lock_location, "wb");
-    fclose(tclock);
-  }
-
   /*
    * Use the default editor if none is selected
    */
@@ -624,8 +616,18 @@ int main(int argc, char *argv[]) {
     cJSON_Delete(cjson);
     fclose(log_file);
     free(calendar_filename);
-    unlink(lock_location);
     return EXIT_SUCCESS;
+  }
+
+  /*
+   * Create a lock to prevent multiple use
+   */
+  if (access(lock_location, F_OK) == 0) {
+    printf("Found a lock file (%s). Another instance of this program may be running.\n", lock_location);
+    exit(EXIT_FAILURE);
+  } else {
+    FILE *tclock = fopen(lock_location, "wb");
+    fclose(tclock);
   }
 
   /*
