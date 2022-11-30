@@ -9,7 +9,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <unistd.h>
 #include <zlib.h>
 
 #include "graphics.h"
@@ -221,7 +220,7 @@ void save() {
   {
     char *str = cJSON_Print(cjson);
     unsigned long crc = crc32(0L, Z_NULL, 0);
-    if (json_checksum != crc32(crc, str, strlen(str))) {
+    if (json_checksum != crc32(crc, (unsigned char *)str, strlen(str))) {
 
       cJSON *version = find(cjson, "version");
       if (!version) {
@@ -249,7 +248,7 @@ void save() {
       {
         char *str = cJSON_Print(cjson);
         unsigned long crc = crc32(0L, Z_NULL, 0);
-        json_checksum = crc32(crc, str, strlen(str));
+        json_checksum = crc32(crc, (unsigned char *)str, strlen(str));
         free(str);
       }
       set_statusline("File saved.");
@@ -578,7 +577,7 @@ int main(int argc, char *argv[]) {
 
   char *str = cJSON_Print(cjson);
   unsigned long crc = crc32(0L, Z_NULL, 0);
-  json_checksum = crc32(crc, str, strlen(str));
+  json_checksum = crc32(crc, (unsigned char *)str, strlen(str));
   free(str);
 
   cJSON *version = find(cjson, "version");
@@ -847,7 +846,7 @@ int main(int argc, char *argv[]) {
       {
         char *str = cJSON_Print(cjson);
         unsigned long crc = crc32(0L, Z_NULL, 0);
-        if (json_checksum != crc32(crc, str, strlen(str))) {
+        if (json_checksum != crc32(crc, (unsigned char *)str, strlen(str))) {
           set_statusline("Refusing to quit (you have unsaved data). Save with \"s\", or quit with \"ctrl-c\".");
         } else {
           running = 0;
@@ -895,7 +894,7 @@ int main(int argc, char *argv[]) {
     {
       char *str = cJSON_Print(cjson);
       unsigned long crc = crc32(0L, Z_NULL, 0);
-      if (json_checksum != crc32(crc, str, strlen(str))) {
+      if (json_checksum != crc32(crc, (unsigned char *)str, strlen(str))) {
         move(0, 0);
         printw("(*)");
       }
