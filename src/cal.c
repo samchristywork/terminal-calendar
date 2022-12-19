@@ -138,7 +138,7 @@ cJSON *readJSONFile(FILE *f) {
 }
 
 void die(WINDOW *w, int no_clear, int status, char *reason) {
-  if(w){
+  if (w) {
     delwin(w);
     endwin();
     refresh();
@@ -454,7 +454,7 @@ int main(int argc, char *argv[]) {
   keys.print = 'p';
   keys.quit = 'q';
   keys.reset_date_offset = '0';
-  keys.reverse_search = 92; //Backslash
+  keys.reverse_search = 92; // Backslash
   keys.save = 's';
   keys.search = '/';
 
@@ -519,7 +519,7 @@ int main(int argc, char *argv[]) {
       exit(EXIT_SUCCESS);
     } else if (opt == 'z') {
       cli_mode = 1;
-      cli_arg=malloc(strlen(optarg)+1);
+      cli_arg = malloc(strlen(optarg) + 1);
       strcpy(cli_arg, optarg);
     } else if (opt == '?') {
       usage(argv);
@@ -642,7 +642,11 @@ int main(int argc, char *argv[]) {
         if (tag) {
           cJSON *data = find(tag, "data");
           if (!data) {
-            char *str = malloc(sizeof(argv[optind + 1] + 2));
+            char *str = malloc(strlen(argv[optind + 1]) + 2);
+            if (!str) {
+              perror("malloc");
+            }
+
             sprintf(str, "%s\n", argv[optind + 1]);
             data = cJSON_CreateString(str);
             cJSON_AddItemToObject(tag, "data", data);
@@ -728,7 +732,7 @@ int main(int argc, char *argv[]) {
   int date_offset = 0;
   startup_time = time(0);
   struct tm *now = localtime(&startup_time);
-  now->tm_hour=12;
+  now->tm_hour = 12;
   startup_time = mktime(now);
 
   /*
