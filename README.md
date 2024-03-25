@@ -1,4 +1,4 @@
-![Banner](https://s-christy.com/status-banner-service/terminal-calendar/banner-slim.svg)
+![Banner](https://s-christy.com/sbs/status-banner.svg?icon=action/calendar_month&hue=100&title=Terminal%20Calendar&description=I%20just%20really%20dislike%20Google%20Calendar)
 
 ## Overview
 
